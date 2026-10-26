@@ -1,0 +1,9 @@
+# 本地截图与临时文件，不需要发布
+preview/
+_shots/
+*.log
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini

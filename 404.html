@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>页面走丢了 · 三七</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(120% 80% at 50% 0%, #101014 0%, #050506 60%);
+      color: #f4f5f7;
+      font-family: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      text-align: center;
+      padding: 24px;
+    }
+    .code {
+      margin: 0;
+      font-size: clamp(88px, 18vw, 180px);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: transparent;
+      -webkit-text-stroke: 2px rgba(255, 255, 255, 0.55);
+    }
+    p { margin: 18px 0 0; color: #b6bac2; letter-spacing: 0.06em; }
+    a {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 12px 26px;
+      border-radius: 999px;
+      background: #fff;
+      color: #08080a;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+    a:hover { transform: translateY(-2px); }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="code" aria-hidden="true">404</p>
+    <p>这个页面不存在，可能已经被移动了。</p>
+    <a href="/">回到首页</a>
+  </main>
+</body>
+</html>

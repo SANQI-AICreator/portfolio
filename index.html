@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>三七 · AI 产品设计师</title>
+  <meta name="description" content="三七的个人作品集：研究 AI 产品，一个人做设计、开发与上线。">
+  <meta name="theme-color" content="#050506">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:title" content="三七 · AI 产品设计师">
+  <meta property="og:image" content="assets/img/portrait-card.jpg">
+  <meta property="og:description" content="三七的个人作品集：研究 AI 产品，一个人做设计、开发与上线。">
+
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="progress" aria-hidden="true"><span class="progress-bar" id="progress-bar"></span></div>
+
+  <!-- ============ 顶栏 ============ -->
+  <header class="site-header" id="site-header">
+    <a class="brand" href="#home" data-route="home" aria-label="回到首页">
+      <span class="brand-mark" data-mark="header" aria-hidden="true"></span>
+      <span class="brand-text">
+        <span class="brand-name" data-bind="brand.name">三七</span>
+        <span class="brand-latin" data-bind="brand.latin">SANQI</span>
+      </span>
+    </a>
+
+    <nav class="site-nav" id="site-nav" aria-label="主导航">
+      <span class="nav-pill" id="nav-pill" aria-hidden="true"></span>
+      <a class="nav-link is-active" href="#home" data-route="home">首页</a>
+      <a class="nav-link" href="#about" data-route="about">关于我</a>
+      <a class="nav-link" href="#works" data-route="works">我的作品</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="contact-btn" type="button" data-open-contact>联系我</button>
+      <button class="menu-btn" type="button" id="menu-btn" aria-expanded="false" aria-controls="site-nav" aria-label="打开菜单">
+        <span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ============ 首页 ============ -->
+    <section class="view view-home" id="home" aria-labelledby="hero-title">
+      <div class="hero">
+        <p class="eyebrow hero-eyebrow" data-bind="hero.eyebrow">PORTFOLIO · 2026</p>
+
+        <h1 class="hero-visual" id="hero-title">
+          <span class="hero-stage">
+            <img
+              class="hero-portrait"
+              src="assets/img/portrait.webp"
+              alt="三七 · AI 产品设计师的动漫形象：黑色短发、戴墨镜、白色条纹衬衫，比出剪刀手"
+              width="1213" height="1000"
+              fetchpriority="high"
+              decoding="async">
+          </span>
+          <span class="hero-wordmark" aria-hidden="true" data-bind="brand.latin">SANQI</span>
+        </h1>
+
+        <p class="hero-role" data-bind="hero.tagline">一个人，做点新奇的产品</p>
+        <ul class="hero-meta" id="hero-meta"></ul>
+        <div class="hero-actions">
+          <a class="btn btn--solid" href="#works" data-route="works">查看作品</a>
+          <button class="btn btn--ghost" type="button" data-open-contact>聊聊合作</button>
+        </div>
+      </div>
+
+      <div class="scroll-hint" aria-hidden="true">
+        <span class="bracket bracket--l"></span>
+        <span class="scroll-hint-text">SCROLL</span>
+        <span class="bracket bracket--r"></span>
+      </div>
+    </section>
+
+    <!-- ============ 关于我 ============ -->
+    <section class="view view-about" id="about" aria-labelledby="about-title">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <p class="eyebrow">ABOUT</p>
+          <h2 class="section-title" id="about-title">关于我</h2>
+          <p class="section-lead" data-bind="about.lead"></p>
+        </header>
+
+        <div class="about-grid">
+          <figure class="about-portrait" data-reveal>
+            <img
+              src="assets/img/portrait-card.jpg"
+              alt="三七的动漫形象：戴墨镜、比剪刀手，背景是蓝天"
+              width="900"
+              height="900"
+              loading="lazy"
+              decoding="async">
+          </figure>
+        </div>
+
+        <div class="about-facts" id="about-facts" data-reveal></div>
+        <ul class="chips" id="about-skills" data-reveal></ul>
+      </div>
+    </section>
+
+    <!-- ============ 我的作品 ============ -->
+    <section class="view view-works" id="works" aria-labelledby="works-title">
+      <div class="container">
+        <header class="section-head section-head--center" data-reveal>
+          <p class="eyebrow">SELECTED WORKS</p>
+          <h2 class="section-title" id="works-title">我的作品</h2>
+          <p class="section-lead" data-bind="works.lead"></p>
+        </header>
+
+        <div class="gallery" id="gallery"></div>
+        <p class="gallery-hint" data-reveal>点开任意一张卡片，查看项目详情</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ 页脚 ============ -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-copy" data-bind="footer.text">© 2026 三七 · 用设计与代码手工搭建</p>
+      <div class="footer-links">
+        <button class="footer-link" type="button" data-open-contact>联系我</button>
+        <a class="footer-link" href="#home" data-route="home">回到顶部 ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ 联系我 ============ -->
+  <div class="modal" id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-title" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card" tabindex="-1" role="document">
+      <button class="modal-close" type="button" data-close aria-label="关闭">&times;</button>
+      <p class="eyebrow">CONTACT</p>
+      <h2 id="contact-title" class="modal-title" data-bind="contact.title">联系我</h2>
+      <p class="modal-sub" data-bind="contact.sub">点击任意一行即可复制</p>
+      <div class="contact-list" id="contact-list"></div>
+      <p class="modal-foot" data-bind="contact.foot"></p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <div class="noscript">本站需要启用 JavaScript 才能显示完整内容。</div>
+  </noscript>
+
+  <script src="assets/js/site-data.js"></script>
+  <script src="assets/js/particles.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
