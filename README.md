@@ -1,5 +1,8 @@
 # 个人作品集网站
 
+> 在线地址：<https://sanqi-aicreator.github.io/portfolio/>
+> 仓库：<https://github.com/SANQI-AICreator/portfolio>
+
 一个纯静态的单页个人网站：深色粒子背景、玻璃拟态卡片、可展开的作品画廊、点击复制联系方式的弹窗。
 无框架、无构建、无外部依赖，双击 `index.html` 就能打开。
 

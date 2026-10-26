@@ -11,7 +11,7 @@
 | --- | --- |
 | 费用 | 免费（Public 仓库） |
 | 上线时间 | 5 分钟 |
-| 网址 | `https://你的用户名.github.io/portfolio/`，绑自己的域名也可以 |
+| 网址 | `https://sanqi-aicreator.github.io/portfolio/`，绑自己的域名也可以 |
 | HTTPS | 自动，免费 |
 | 国内访问 | **一般**：能开，但 GitHub 在境内不稳定，晚高峰可能慢或偶尔打不开 |
 
@@ -27,21 +27,22 @@
 打开 <https://github.com/new>：
 
 - **Repository name**：`portfolio`
-  （想直接得到 `https://你的用户名.github.io/` 这样的根网址，就把仓库名写成 `你的用户名.github.io`）
+  （想直接得到 `https://sanqi-aicreator.github.io/` 这样的根网址，就把仓库名写成 `SANQI-AICreator.github.io`）
 - **Visibility**：**Public**（私有仓库的 Pages 要付费，免费版不支持）
 - 不要勾 "Add a README file"
 - 点 **Create repository**
 
 ## 2. 把本地代码推上去
 
-把 `你的用户名` 换成实际的 GitHub 用户名：
+远端地址和分支**已经配好了**（`origin` → `github.com/SANQI-AICreator/portfolio.git`，分支 `main`），
+建好空仓库后直接推：
 
 ```powershell
 cd "D:\AI项目\DSH\个人网站"
-git remote add origin https://github.com/你的用户名/portfolio.git
-git branch -M main
 git push -u origin main
 ```
+
+> 如果建仓库时用了别的名字，先改指一下：`git remote set-url origin https://github.com/SANQI-AICreator/新仓库名.git`
 
 > 第一次 `push` 会弹出浏览器登录窗口，授权即可。
 > 如果命令行问密码，填 **Personal Access Token**（GitHub → Settings → Developer settings → Personal access tokens），不是账号密码。
@@ -59,7 +60,7 @@ git push -u origin main
 等 1–2 分钟（顶部会显示 "Your site is live at …"），访问：
 
 ```
-https://你的用户名.github.io/portfolio/
+https://sanqi-aicreator.github.io/portfolio/
 ```
 
 **到这里就上线了**，这个链接可以直接发给别人。手机也能打开。
@@ -84,7 +85,7 @@ GitHub Pages **区分大小写**。确认服务器上的路径与代码里完全
 `/portfolio/` 这种子路径和自定义域名的根路径两种部署方式。
 
 **想改成根网址 `用户名.github.io`？**
-把仓库重命名为 `你的用户名.github.io`，Settings → Pages 里重新 Save 一次即可。
+把仓库重命名为 `SANQI-AICreator.github.io`，Settings → Pages 里重新 Save 一次即可。
 
 ---
 
@@ -115,7 +116,7 @@ git push
 | A | `@` | `185.199.109.153` |
 | A | `@` | `185.199.110.153` |
 | A | `@` | `185.199.111.153` |
-| CNAME | `www` | `你的用户名.github.io` |
+| CNAME | `www` | `sanqi-aicreator.github.io` |
 
 4. 等 DNS 生效（10 分钟–2 小时），Pages 里出现绿色对勾后勾选 **Enforce HTTPS**
 
