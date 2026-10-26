@@ -1,36 +1,40 @@
-# 部署上线指南（Vercel + 自己的域名，免备案）
+# 部署上线（GitHub Pages，免费免备案）
 
-站点是纯静态的（12 个文件、434 KB、零外部依赖），所以部署只是「把文件放到一个能公网访问的地方」。
-
-**你现在要走的路线：Vercel + 买一个域名。** 全程免备案，15 分钟上线。
-
----
-
-# 一、先说实话：Vercel 在国内的真实体验
-
-| | 速度 | 稳定性 |
-| --- | --- | --- |
-| `xxx.vercel.app` 默认域名 | 国内经常打不开 | 差（域名常被污染，**不要用这个发人**） |
-| **自己的域名指向 Vercel** | 约 150–400ms 首字节 | 基本能开，晚高峰偶有抖动 |
-
-结论：**能访问、免备案、免费，但不要期待「秒开」**。真正秒开只有大陆服务器 + 备案（文末有）。
-好消息是这个站很轻（首屏 ~400KB，gzip 后更小），实际打开体感会比数字好。
-
-如果你更在意国内速度又不想备案，**香港轻量服务器**（¥24/月左右）比 Vercel 稳得多，见第五节。
+站点是纯静态的（10 个发布文件、434 KB、零外部依赖），产物已经在本地仓库里提交好了，
+推到 GitHub、打开 Pages 就能全世界访问。**不需要买服务器，也不需要备案。**
 
 ---
 
-# 二、Vercel 部署步骤
+# 一、先说清楚这条路的边界
 
-## 0. 准备
+| | 情况 |
+| --- | --- |
+| 费用 | 免费（Public 仓库） |
+| 上线时间 | 5 分钟 |
+| 网址 | `https://你的用户名.github.io/portfolio/`，绑自己的域名也可以 |
+| HTTPS | 自动，免费 |
+| 国内访问 | **一般**：能开，但 GitHub 在境内不稳定，晚高峰可能慢或偶尔打不开 |
 
-- GitHub 账号（代码要先推上去，Vercel 从仓库自动部署）
-- 一个域名（`.com` 首年 ¥60–80，阿里云 / 腾讯云 / Cloudflare 都行）
-- 域名**做实名认证**（国内注册商要求，不做会被暂停解析）
+适合：先把网站发出去、给别人看作品。以后嫌慢，同一套文件可以直接搬到 Vercel / 香港 / 大陆服务器，
+**换的只是托管，网站本身一行都不用改**。
 
-> 域名解析到境外服务器**不需要备案**。备案只针对「解析到中国大陆服务器」的情况。
+---
 
-## 1. 把代码推到 GitHub
+# 二、三步上线
+
+## 1. 建仓库
+
+打开 <https://github.com/new>：
+
+- **Repository name**：`portfolio`
+  （想直接得到 `https://你的用户名.github.io/` 这样的根网址，就把仓库名写成 `你的用户名.github.io`）
+- **Visibility**：**Public**（私有仓库的 Pages 要付费，免费版不支持）
+- 不要勾 "Add a README file"
+- 点 **Create repository**
+
+## 2. 把本地代码推上去
+
+把 `你的用户名` 换成实际的 GitHub 用户名：
 
 ```powershell
 cd "D:\AI项目\DSH\个人网站"
@@ -39,119 +43,111 @@ git branch -M main
 git push -u origin main
 ```
 
-（仓库在 <https://github.com/new> 建，选 **Public**，不要勾 README。）
+> 第一次 `push` 会弹出浏览器登录窗口，授权即可。
+> 如果命令行问密码，填 **Personal Access Token**（GitHub → Settings → Developer settings → Personal access tokens），不是账号密码。
 
-## 2. 导入 Vercel
+推送成功后，仓库里应该能看到 `index.html`、`assets/`、`404.html` 等文件（`preview/` 被我 exclude 了，不会上传）。
 
-1. <https://vercel.com/signup> → 用 **GitHub 账号**注册/登录
-2. 控制台点 **Add New… → Project**
-3. 找到 `portfolio` 仓库 → **Import**
-4. 配置页保持默认即可（框架会被识别为 **Other**，无需 Build Command / Output Directory）
-5. 点 **Deploy**，约 20 秒完成
+## 3. 打开 Pages
 
-得到一个 `https://portfolio-xxxx.vercel.app`。**这个域名在国内大概率打不开，别急，下一步绑自己的域名。**
+仓库 → **Settings** → 左侧 **Pages**：
 
-## 3. 绑定域名
+- **Source**：`Deploy from a branch`
+- **Branch**：`main`，目录 `/(root)`
+- 点 **Save**
 
-Vercel 项目 → **Settings → Domains**，输入你的域名（如 `sanqi.design`），点 **Add**；
-再添加一条 `www.sanqi.design`（Vercel 会自动把 www 跳转到主域名）。
+等 1–2 分钟（顶部会显示 "Your site is live at …"），访问：
 
-然后到域名商后台加解析：
+```
+https://你的用户名.github.io/portfolio/
+```
 
-| 类型 | 主机记录 | 记录值 | 说明 |
-| --- | --- | --- | --- |
-| A | `@` | `76.76.21.21` | 裸域名指向 Vercel（以面板显示为准） |
-| CNAME | `www` | `cname.vercel-dns.com` | www 子域名 |
+**到这里就上线了**，这个链接可以直接发给别人。手机也能打开。
 
-> ⚠️ 以 **Vercel 的 Domains 面板里显示的记录值为准**——新项目有时会给出不同的 IP，
-> 照抄面板上的就不会错。官方说明：<https://vercel.com/kb/guide/a-record-and-caa-with-vercel>
+---
 
-## 4. 等生效 + 自动 HTTPS
+# 三、验证 & 常见问题
 
-DNS 一般 10 分钟到 2 小时生效（`ping sanqi.design` 能看到 Vercel 的 IP 就 OK）。
-生效后 Vercel 会**自动签发并续期 HTTPS 证书**，不需要额外操作，`http://` 会自动跳 `https://`。
+**怎么确认部署成功？**
+仓库 → **Actions** 标签，看到 `pages build and deployment` 是绿色对勾就成功了。
+或者看 Settings → Pages 顶部有没有显示访问地址。
 
-## 5. 以后更新内容
+**图片 / 样式 404？**
+GitHub Pages **区分大小写**。确认服务器上的路径与代码里完全一致：`assets/img/portrait.webp`。
+（本地 Windows 不区分大小写，所以本地正常、线上 404 的情况很常见。）
+
+**改了内容没生效？**
+等 1 分钟；浏览器 `Ctrl + F5` 强刷（HTML 会被缓存）。
+
+**`404.html` 有用吗？**
+有用。访问不存在的路径时 GitHub Pages 会返回它，里面的「回到首页」按钮会自动适配
+`/portfolio/` 这种子路径和自定义域名的根路径两种部署方式。
+
+**想改成根网址 `用户名.github.io`？**
+把仓库重命名为 `你的用户名.github.io`，Settings → Pages 里重新 Save 一次即可。
+
+---
+
+# 四、以后怎么更新
 
 ```powershell
 cd "D:\AI项目\DSH\个人网站"
+# 改完 assets/js/site-data.js
 git add -A
 git commit -m "更新作品"
 git push
 ```
 
-Vercel 检测到 push 会自动重新部署，1 分钟内生效。
+推上去 1 分钟内自动重新部署。
 
 ---
 
-# 三、让 Vercel 在国内尽量快一点
+# 五、绑定自己的域名（可选，随时可加）
 
-已经做好的（代码层面）：
+1. 买域名（阿里云 / 腾讯云 / Cloudflare，`.com` 首年 ¥60–80），完成**实名认证**
+2. 仓库 → Settings → Pages → **Custom domain** 填 `sanqi.design` → Save
+   （仓库里会自动生成 `CNAME` 文件，**别删**）
+3. 域名商后台加解析：
 
-- 零外部依赖：不加载 Google Fonts / CDN 脚本，字体用系统字体
-- 图片已压缩：人像 WebP 175KB，卡片 JPG 183KB
-- `vercel.json` 已配置：`/assets/` 一年强缓存、HTML 不缓存、安全响应头
+| 类型 | 主机记录 | 记录值 |
+| --- | --- | --- |
+| A | `@` | `185.199.108.153` |
+| A | `@` | `185.199.109.153` |
+| A | `@` | `185.199.110.153` |
+| A | `@` | `185.199.111.153` |
+| CNAME | `www` | `你的用户名.github.io` |
 
-你还可以做的：
+4. 等 DNS 生效（10 分钟–2 小时），Pages 里出现绿色对勾后勾选 **Enforce HTTPS**
 
-1. **一定要用自己的域名**，别用 `vercel.app`（那串域名在国内经常解析失败）
-2. 域名 DNS 建议放 **Cloudflare** 或 **DNSPod**，解析更稳、生效更快
-3. 不要开启 Vercel 的 Deployment Protection（会多一次鉴权跳转）
-4. 别加不必要的图片优化 / 分析脚本
-
-仍然改变不了的事实：**Vercel 没有中国大陆节点**，物理距离和跨境链路决定了它有下限。
-实测国内访问大约 150–400ms 首字节，能打开，但不是「秒开」。
-
----
-
-# 四、上线前检查清单
-
-- [ ] `assets/js/site-data.js`：姓名、作品、联系方式是真实内容
-- [ ] 不想公开的信息（私人手机号等）没放上去
-- [ ] `index.html`：`<title>`、`<meta name="description">` 正确
-- [ ] `og:image` 改成完整网址，分享才有缩略图：
-      `content="https://sanqi.design/assets/img/portrait-card.jpg"`
-- [ ] 手机打开一次：菜单、作品展开、复制联系方式正常
-- [ ] 微信里打开测试一下（微信对境外域名可能提示「非官方网页」，属正常现象）
+> 域名指向 GitHub Pages（境外）**不需要备案**；备案只针对解析到中国大陆服务器的情况。
 
 ---
 
-# 五、想更快：两条后续路线（域名可以不变）
+# 六、以后想更快：三条迁移路线（域名和代码都不用改）
 
-## A. 香港轻量服务器（免备案，当天可上）
+| 方案 | 国内速度 | 上线时间 | 成本 |
+| --- | --- | --- | --- |
+| Vercel + 自定义域名 | 150–400ms | 15 分钟 | 免费 |
+| 香港轻量服务器 | 40–90ms | 当天 | ¥250–350/年 |
+| 大陆服务器 + 备案 | 20–40ms | 1–3 周 | ¥100–200/年 + 域名 |
 
-- 阿里云 / 腾讯云香港轻量，2 核 2G，¥24–30/月（年付更便宜）
-- 装 Nginx，把文件传上去，域名 A 记录指向服务器 IP
-- 国内访问约 40–90ms，比 Vercel 稳
-- 配置和脚本项目里都有：`deploy/nginx.conf`、`deploy/upload.ps1`
+- **Vercel**：`vercel.json` 已经放在根目录（缓存与安全头），GitHub Pages 会把它当普通文件忽略，不影响现在使用。
+- **香港 / 大陆服务器**：`deploy/nginx.conf` + `deploy/upload.ps1` 已备好，一条命令上传部署：
 
 ```powershell
-.\deploy\upload.ps1 -Server 你的服务器IP -User root -Domain sanqi.design
+.\deploy\upload.ps1 -Server 服务器IP -User root -Domain sanqi.design
 ```
 
-## B. 大陆服务器 + ICP 备案（真正秒开，20–40ms）
-
-- 需要域名 + 大陆轻量服务器（购买 ≥3 个月才有备案服务码，只买对象存储不行）
-- 备案：云厂商初审 1–2 天 + 管局 7–20 个工作日
-- 备案期间网站不能解析到大陆服务器，所以先用 Vercel 过渡
-- 备案通过后：装 Nginx → `deploy/upload.ps1` 上传 → 域名 A 记录改指服务器
-
-**迁移成本几乎为零**：只改 DNS 记录，网站文件一行都不用动。
+迁移只改 DNS 记录，网站文件不用动。
 
 ---
 
-# 六、常见问题
+# 七、上线前检查清单
 
-**Vercel 免费额度够吗？**
-Hobby 计划每月 100GB 带宽，个人作品集完全够。注意 Hobby 仅限非商业用途，放付费服务需升级 Pro。
-
-**域名买了，但解析一直不生效？**
-先确认实名认证通过；TTL 改 600 秒再等 10 分钟；用 `nslookup sanqi.design 8.8.8.8` 验证。
-
-**能不能不用 GitHub，直接上传文件夹？**
-可以：`npm i -g vercel` 后在本目录执行 `vercel`，登录授权后按提示部署。
-但 Git 方式更好——以后改内容只需 `git push`。
-
-**国内打开很慢 / 打不开？**
-先排除 DNS 未生效、微信内置浏览器拦截；确认用的是自定义域名而不是 `vercel.app`。
-长期不满意就走第五节的香港轻量。
+- [ ] `assets/js/site-data.js`：姓名、作品、联系方式都是真实内容
+- [ ] 不想公开的信息（私人手机号等）没有放上去
+- [ ] `index.html`：`<title>`、`<meta name="description">` 与内容一致
+- [ ] 绑了域名后，把 `og:image` 改成完整网址，分享才有缩略图：
+      `content="https://sanqi.design/assets/img/portrait-card.jpg"`
+- [ ] 手机打开一次：菜单、作品展开、复制联系方式正常
+- [ ] 微信里打开一次（境外域名偶尔会提示「非官方网页」，属正常现象）
