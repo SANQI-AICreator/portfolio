@@ -48,7 +48,16 @@
   <main>
     <p class="code" aria-hidden="true">404</p>
     <p>这个页面不存在，可能已经被移动了。</p>
-    <a href="/">回到首页</a>
+    <a id="home" href="/">回到首页</a>
   </main>
+  <script>
+    // 兼容两种部署：自定义域名（根路径）/ GitHub Pages 项目站（/repo/ 子路径）
+    (function () {
+      var parts = location.pathname.split("/").filter(Boolean);
+      var isProjectPage = /\.github\.io$/.test(location.hostname) && parts.length > 0;
+      var home = isProjectPage ? "/" + parts[0] + "/" : "/";
+      document.getElementById("home").setAttribute("href", home);
+    })();
+  </script>
 </body>
 </html>

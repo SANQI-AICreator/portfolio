@@ -1,48 +1,30 @@
-# 部署上线指南
+# 部署上线指南（GitHub Pages + 自己的域名）
 
-这个网站是**纯静态**的：只有 HTML / CSS / JS / 图片，没有后端、没有数据库、不需要构建。
-任何能把文件夹放到公网的地方都能跑，最省事的方式 1 分钟搞定，最正规的方式需要域名和备案。
+这个网站是**纯静态**的：只有 HTML / CSS / JS / 图片，没有后端、不需要构建。
+下面这条路线完全免费（域名除外），不需要备案，改完内容 `git push` 就更新。
 
-> 本地仓库已经初始化并提交好了（`git log` 能看到 `initial commit`），
-> 下面所有命令都在本文件夹（`D:\AI项目\DSH\个人网站`）里执行。
-
----
-
-## 一、选一个平台
-
-| 方案 | 费用 | 国内访问 | 是否要备案 | 适合 |
-| --- | --- | --- | --- | --- |
-| **Netlify Drop** | 免费 | 一般（海外节点） | 不需要 | 想 1 分钟先上线 |
-| **GitHub Pages** | 免费 | 一般（偶尔慢） | 不需要 | 长期维护、以后常改 |
-| **Cloudflare Pages** | 免费 | 不稳定 | 不需要 | 有 Cloudflare 账号 |
-| **Vercel** | 免费额度 | 一般 | 不需要 | 习惯 Git 工作流 |
-| **阿里云 OSS / 腾讯云 COS** | 几块钱/月 | **快** | **必须备案** | 面向国内访客、有备案域名 |
-
-如果是给国内的人看、又要稳定快速，最终还是要走「备案域名 + 国内云」；
-先用 Netlify 或 GitHub Pages 把链接发出去，之后再换域名也不迟。
+> 本地仓库已经初始化并提交好了（`git log` 能看到第一次提交），
+> 下列命令都在本文件夹（`D:\AI项目\DSH\个人网站`）里执行。
 
 ---
 
-## 二、方案 A：Netlify Drop（最快，不用命令行）
+## 第 0 步：注册 GitHub（如果还没有）
 
-1. 打开 <https://app.netlify.com/drop>
-2. 把 `D:\AI项目\DSH\个人网站` **整个文件夹**拖进页面（不是拖 zip）
-3. 等十几秒，得到一个 `https://随机名.netlify.app` 的链接，**这就是可以发人的网址**
-4. 想改网址：Site configuration → Change site name，改成 `sanqi` 之类 → `https://sanqi.netlify.app`
-
-更新内容：改完文件，再拖一次到同一个站点（Deploys → Drag and drop），会生成新版本。
-免费额度对个人站完全够用，还自带 HTTPS。
+<https://github.com/signup>，用邮箱注册即可，用户名会被用作网址的一部分（如 `sanqi`）。
 
 ---
 
-## 三、方案 B：GitHub Pages（推荐长期用）
+## 第 1 步：建仓库
 
-### 1. 在 GitHub 建仓库
+打开 <https://github.com/new>：
 
-登录 <https://github.com/new>，Repository name 填 `portfolio`（或任意名），
-**Public**（私有仓库的 Pages 要付费），不要勾选 README / .gitignore，直接 Create。
+- **Repository name**：填 `portfolio`（想用 `用户名.github.io` 当网址，就把仓库名写成 `用户名.github.io`）
+- **Visibility**：选 **Public**（私有仓库的 Pages 要付费）
+- 不要勾选 "Add a README file"，直接 **Create repository**
 
-### 2. 推上去
+---
+
+## 第 2 步：把本地代码推上去
 
 把下面的 `你的用户名` 和 `portfolio` 换成实际值：
 
@@ -53,88 +35,141 @@ git branch -M main
 git push -u origin main
 ```
 
-> 第一次 `push` 会弹出登录窗口，用浏览器授权即可（或者用 Personal Access Token 当密码）。
+> 第一次 push 会弹出浏览器登录窗口，授权即可。
+> 如果提示要密码，密码处填 **Personal Access Token**（GitHub → Settings → Developer settings → Tokens），不是账号密码。
 
-### 3. 打开 Pages
+---
 
-仓库 → **Settings** → 左侧 **Pages** → Build and deployment：
+## 第 3 步：打开 Pages
 
-- Source 选 **Deploy from a branch**
-- Branch 选 **main**，目录选 **/(root)**
+仓库页 → **Settings** → 左侧 **Pages**：
+
+- **Source**：Deploy from a branch
+- **Branch**：`main`，目录 `/(root)`
 - 点 **Save**
 
-等 1～2 分钟，访问：
+等 1～2 分钟（页面顶部会显示部署进度），访问：
 
 ```
 https://你的用户名.github.io/portfolio/
 ```
 
-如果仓库名就叫 `你的用户名.github.io`，网址则是 `https://你的用户名.github.io/`（少了子路径）。
+这一步成功就说明**全世界都能访问了**——可以先把这个链接发给朋友看效果，再慢慢弄域名。
 
-### 4. 以后改内容
+---
+
+## 第 4 步：买一个域名
+
+推荐在国内平台买，支付宝付款、实名认证方便：
+
+| 平台 | 优点 | 备注 |
+| --- | --- | --- |
+| 阿里云（万网） | 支付宝、实名快 | 首年 .com 约 ¥60-80，续费约 ¥90 |
+| 腾讯云 | 同上，常有优惠券 | 同上 |
+| Cloudflare Registrar | 成本价、无溢价 | 需要国际信用卡 |
+
+买的时候注意：
+
+1. **域名要能自定义 DNS**（以上几家都行）
+2. 国内平台买的域名要做**实名认证**（上传身份证），不认证会被暂停解析
+3. 用 GitHub Pages 托管**不需要备案**（服务器在境外），备案是国内服务器才需要
+4. 建议同时把 `www` 和根域名都保留，两边都能打开
+
+---
+
+## 第 5 步：把域名绑到 GitHub Pages
+
+### 1）在 GitHub 里填域名
+
+仓库 → **Settings** → **Pages** → **Custom domain**，填入 `sanqi.design`（你的域名），点 Save。
+GitHub 会在仓库里自动生成一个 `CNAME` 文件，**以后不要删它**。
+
+### 2）到域名商后台加解析
+
+以阿里云为例：域名控制台 → 解析设置 → 添加记录。**四条 A 记录 + 一条 CNAME**：
+
+| 记录类型 | 主机记录 | 记录值 | TTL |
+| --- | --- | --- | --- |
+| A | `@` | `185.199.108.153` | 600 |
+| A | `@` | `185.199.109.153` | 600 |
+| A | `@` | `185.199.110.153` | 600 |
+| A | `@` | `185.199.111.153` | 600 |
+| CNAME | `www` | `你的用户名.github.io` | 600 |
+
+（如果域名商支持 IPv6，可以再加四条 AAAA：`2606:50c0:8000::153`、`2606:50c0:8001::153`、`2606:50c0:8002::153`、`2606:50c0:8003::153`，不是必须。）
+
+### 3）等 DNS 生效
+
+一般 10 分钟到 2 小时。用 `ping sanqi.design` 看到 `185.199.108.153` 就说明生效了。
+
+### 4）开启强制 HTTPS
+
+回到 Settings → Pages，等 **Custom domain** 那一行出现绿色对勾（GitHub 自动签发证书，可能要等几分钟到几小时），
+然后勾上 **Enforce HTTPS**。之后 `http://` 会自动跳转到 `https://`。
+
+---
+
+## 第 6 步：把分享图改成完整网址
+
+绑定域名成功后，改一下 `index.html` 里这一行，微信/Twitter 分享时才有缩略图：
+
+```html
+<meta property="og:image" content="https://sanqi.design/assets/img/portrait-card.jpg">
+```
+
+然后提交：
 
 ```powershell
 cd "D:\AI项目\DSH\个人网站"
+git add -A
+git commit -m "配置自定义域名"
+git push
+```
+
+---
+
+## 以后怎么更新内容
+
+```powershell
+cd "D:\AI项目\DSH\个人网站"
+# 改完 assets/js/site-data.js 之后
 git add -A
 git commit -m "更新作品"
 git push
 ```
 
-一分钟左右自动生效。
+等 1 分钟左右自动生效。浏览器有缓存的话按 `Ctrl + F5` 强刷。
 
 ---
 
-## 四、方案 C：国内云（要备案）
+## 上线前检查清单
 
-以阿里云 OSS 为例（腾讯云 COS 同理）：
-
-1. 开通 OSS，新建 Bucket，**读写权限设为「公共读」**
-2. 基础设置 → 静态页面：默认首页填 `index.html`，默认 404 填 `404.html`
-3. 把整站文件上传到 Bucket 根目录（保持 `assets/` 目录结构）
-4. 绑定自定义域名（如 `sanqi.design`）——**域名必须已完成 ICP 备案**，
-   未备案的域名无法绑定，只能用 OSS 默认域名访问（浏览器会提示、且可能被限速）
-5. 建议再挂一个 CDN，开启 HTTPS
-
-备案：在服务器/云厂商的备案系统提交，需要身份证、域名证书，通常 1～3 周。
-备案主体是域名，所以**先买域名再备案**。
+- [ ] `assets/js/site-data.js`：名字、作品、联系方式都是真实内容
+- [ ] `index.html`：`<title>`、`<meta name="description">`、`og:image` 都对
+- [ ] 手机打开一次：菜单、作品展开、复制联系方式都正常
+- [ ] 不想公开的信息（私人手机号等）不要放上去
 
 ---
 
-## 五、绑定自己的域名
+## 常见问题
 
-不管用哪个平台，套路一样：
+**国内访问 GitHub Pages 慢 / 打不开？**
+这是 GitHub 在境内的网络问题，没有技术手段能彻底解决。域名可以保留，
+以后换成国内对象存储（阿里云 OSS / 腾讯云 COS）+ 备案域名，只需要把 DNS 记录改指过去，网站文件一行都不用动。
 
-1. 买域名（阿里云 / 腾讯云 / Cloudflare / Namecheap 都行，`.com` 约 ¥60-80/年）
-2. 在平台后台添加自定义域名（Netlify：Domain settings；GitHub Pages：Settings → Pages → Custom domain）
-3. 到域名商后台按平台提示加解析记录：
-   - 根域名 `@` → A 记录 / ALIAS 记录（平台会给 IP 或目标）
-   - `www` → CNAME 指向平台给的地址
-4. 等 DNS 生效（几分钟到几小时），平台会自动签发 HTTPS 证书
+**图片 404？**
+路径区分大小写，确认 `assets/img/portrait.webp` 大小写与代码一致。
 
-用 GitHub Pages 时，绑定域名后仓库根目录会出现 `CNAME` 文件，**不要删**。
+**改了没生效？**
+看仓库的 **Actions** 页有没有新部署；再按 `Ctrl + F5`。
+
+**能不能加访问统计？**
+可以，接入 Umami / Plausible / 51LA 这类服务，在 `index.html` 的 `</body>` 前加一段脚本即可。
 
 ---
 
-## 六、上线前检查清单
+## 备选方案（不想用 GitHub 时）
 
-- [ ] `assets/js/site-data.js` 里的名字、作品、联系方式都换成真实内容
-- [ ] 联系方式里不要放你不想公开的东西（页面上的内容所有人都能看到）
-- [ ] 把 `index.html` 里的 `og:image` 改成完整网址，分享到微信/Twitter 才有缩略图：
-      `content="https://你的域名/assets/img/portrait-card.jpg"`
-- [ ] `index.html` 的 `<title>` 和 `<meta name="description">` 与内容一致
-- [ ] 手机打开一次，确认菜单、卡片、复制联系方式都正常
-
-## 七、常见问题
-
-**图片不显示？**
-多半是路径大小写问题。GitHub Pages 区分大小写，确保 `assets/img/portrait.webp` 与代码里写的一模一样。
-
-**改了内容，线上没变？**
-等 1 分钟；或按 `Ctrl + F5` 强制刷新（浏览器会缓存 HTML）。GitHub Pages / Netlify 都有部署状态页可以看。
-
-**能放多少个作品？**
-没有限制。`site-data.js` 里 `works.projects` 复制一段就是新项目，卡片会自动排布。
-
-**需要后端吗？**
-表单、留言板这类功能需要后端。目前「联系我」是复制邮箱/微信，不需要服务器。
-以后要加表单，可以用 Netlify Forms 或 Formspree 这类免费服务，仍然不用自己写后端。
+- **Netlify Drop**：<https://app.netlify.com/drop>，把整个文件夹拖进去，10 秒上线，免备案
+- **Cloudflare Pages**：连 GitHub 仓库自动部署，免费额度大
+- **国内云**：需要已备案域名 + 对象存储静态网站托管，国内速度最好
