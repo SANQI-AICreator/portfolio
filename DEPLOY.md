@@ -1,32 +1,143 @@
-# 部署上线指南（GitHub Pages + 自己的域名）
+# 部署上线指南
 
-这个网站是**纯静态**的：只有 HTML / CSS / JS / 图片，没有后端、不需要构建。
-下面这条路线完全免费（域名除外），不需要备案，改完内容 `git push` 就更新。
+这个网站是**纯静态**的（HTML / CSS / JS / 图片，共 434 KB，没有任何外部依赖），
+所以换成国内服务器后首屏基本是「秒开」——瓶颈只在服务器带宽，不在代码。
 
-> 本地仓库已经初始化并提交好了（`git log` 能看到第一次提交），
-> 下列命令都在本文件夹（`D:\AI项目\DSH\个人网站`）里执行。
-
----
-
-## 第 0 步：注册 GitHub（如果还没有）
-
-<https://github.com/signup>，用邮箱注册即可，用户名会被用作网址的一部分（如 `sanqi`）。
+仓库已经初始化并提交好了，下面命令都在本文件夹（`D:\AI项目\DSH\个人网站`）执行。
 
 ---
 
-## 第 1 步：建仓库
+# 一、国内秒开：两条路，先选一条
 
-打开 <https://github.com/new>：
+| | **A. 大陆服务器 + 备案** | **B. 香港轻量（免备案）** |
+| --- | --- | --- |
+| 国内访问速度 | 最快，20–40ms | 较快，40–90ms（跨境出口） |
+| 多久能上线 | 备案 1–3 周 | **当天** |
+| 费用/年 | 域名 ¥70 + 服务器 ¥100–200 | 域名 ¥70 + 服务器 ¥250–350 |
+| 合规 | 需要 ICP 备案（个人可备，作品集没问题） | 不需要备案 |
+| 稳定性 | 最稳 | 高峰期偶有抖动 |
 
-- **Repository name**：填 `portfolio`（想用 `用户名.github.io` 当网址，就把仓库名写成 `用户名.github.io`）
-- **Visibility**：选 **Public**（私有仓库的 Pages 要付费）
-- 不要勾选 "Add a README file"，直接 **Create repository**
+**建议**：不着急就先走 B，当天把域名跑起来；等备案下来再迁到 A（只改 DNS，网站文件不用动）。
+着急「秒开」且能等两三个礼拜，就直接走 A。
 
 ---
 
-## 第 2 步：把本地代码推上去
+# 二、路线 A：大陆服务器（真正的秒开）
 
-把下面的 `你的用户名` 和 `portfolio` 换成实际值：
+## 0. 你要准备的东西
+
+- 一个域名（阿里云 / 腾讯云买，`.com` 首年 ¥60–80，**必须完成实名认证**）
+- 身份证、手机号、常用邮箱
+- 一台大陆服务器（备案需要它的「备案服务码」，所以不能只买对象存储）
+
+## 1. 买服务器
+
+买**轻量应用服务器**最划算（阿里云 / 腾讯云，2 核 2G、3–4M 带宽，促销价 ¥100–200/年）。
+注意两点：
+
+- 地域选**大陆**（香港/海外的不给大陆备案）
+- 购买时长要 **3 个月以上**，否则拿不到备案服务码
+
+## 2. 提交 ICP 备案
+
+在云厂商 App 或控制台点「ICP 备案」：
+
+1. 备案类型选**个人**
+2. 填域名、服务器（系统会带出备案服务码）、身份证、手机号
+3. 上传证件、按提示做**人脸核验**（现在多数省份不用幕布拍照了）
+4. 提交给云厂商初审（1–2 个工作日）→ 管局审核（**7–20 个工作日**）
+
+备案期间网站是打不开的（未备案域名不能解析到大陆服务器），
+**这段时间先用 GitHub Pages 的链接过渡**（见文末）。
+
+## 3. 备案通过后：部署网站
+
+服务器装好 Nginx（或宝塔面板），把站点文件传上去。两种方式：
+
+**方式一：用项目里的脚本（推荐）**
+
+```powershell
+cd "D:\AI项目\DSH\个人网站"
+.\deploy\upload.ps1 -Server 你的服务器IP -User root -Domain sanqi.design
+```
+
+脚本会自动打包 → `scp` 上传 → 服务器上解压到 `/var/www/sanqi` → `nginx -t` 并重载。
+（前提：本机能 `ssh root@IP` 登录，建议先配好免密登录。）
+
+**方式二：图形界面**
+
+用 WinSCP / 宝塔面板的「文件」功能，把 `index.html`、`404.html`、`favicon.svg`、
+`robots.txt`、`assets/` 传到 `/var/www/sanqi/`（保持目录结构）。
+
+## 4. 配置 Nginx
+
+把项目里的 [`deploy/nginx.conf`](deploy/nginx.conf) 传到 `/etc/nginx/conf.d/sanqi.conf`，
+改两处：
+
+```nginx
+server_name sanqi.design www.sanqi.design;   # 换成你的域名
+root /var/www/sanqi;                          # 文件实际所在目录
+```
+
+然后：
+
+```bash
+nginx -t && systemctl reload nginx
+```
+
+这份配置已经包含：gzip 压缩（文本资源压到 1/4）、`assets/` 长缓存、HTML 不缓存、
+404 页面、安全响应头。
+
+## 5. 域名解析
+
+域名商控制台 → 解析设置 → 添加：
+
+| 类型 | 主机记录 | 记录值 |
+| --- | --- | --- |
+| A | `@` | 你的服务器公网 IP |
+| A | `www` | 你的服务器公网 IP |
+
+（如果服务器有独立 IPv6，再加 AAAA 记录。）
+
+## 6. 免费 HTTPS
+
+**最简单**：云厂商控制台的「SSL 证书」里申请免费 DV 证书（一年期，到期可续），
+下载 Nginx 格式，上传到 `/etc/nginx/ssl/`，把 `nginx.conf` 里注释掉的 443 那段打开。
+
+**或自动续期**：
+
+```bash
+apt install certbot python3-certbot-nginx -y
+certbot --nginx -d sanqi.design -d www.sanqi.design
+```
+
+证书配好后，把 80 端口那段改成 `return 301 https://$host$request_uri;` 强制跳转。
+
+## 7.（可选）CDN 加速
+
+站点只有 434 KB，单机 Nginx + gzip 已经够快，**开 CDN 意义不大**。
+如果以后图片多了，再挂阿里云 CDN / 腾讯云 CDN，回源指向这台服务器即可。
+
+---
+
+# 三、路线 B：香港轻量（免备案，当天上线）
+
+1. 买**香港/新加坡**的轻量应用服务器（阿里云、腾讯云都有，¥24–30/月或年付更便宜）
+2. 装 Nginx，按路线 A 的第 3–4 步上传文件、配置 `nginx.conf`
+3. 域名解析 A 记录指向服务器 IP（香港服务器不需要备案，解析立刻生效）
+4. HTTPS 同上（certbot 或免费证书）
+
+适合：想马上有个自己域名的站、又不想等备案。
+国内访问大约 40–90ms，日常浏览体感已经很快；高峰时段可能偶有抖动。
+
+---
+
+# 四、备案期间的过渡：GitHub Pages（免费）
+
+备案没下来之前，先用 GitHub Pages 把链接发出去：
+
+1. <https://github.com/new> 建仓库，名字 `portfolio`，选 **Public**
+2. 推送：
 
 ```powershell
 cd "D:\AI项目\DSH\个人网站"
@@ -35,141 +146,48 @@ git branch -M main
 git push -u origin main
 ```
 
-> 第一次 push 会弹出浏览器登录窗口，授权即可。
-> 如果提示要密码，密码处填 **Personal Access Token**（GitHub → Settings → Developer settings → Tokens），不是账号密码。
+3. 仓库 → Settings → Pages → Source 选 `Deploy from a branch` → `main` / `(root)` → Save
+4. 等 1–2 分钟，访问 `https://你的用户名.github.io/portfolio/`
+
+备案下来后，把域名解析从 GitHub 改指到国内服务器即可，网站文件一行都不用改。
 
 ---
 
-## 第 3 步：打开 Pages
+# 五、以后怎么更新内容
 
-仓库页 → **Settings** → 左侧 **Pages**：
+改完 `assets/js/site-data.js` 之后：
 
-- **Source**：Deploy from a branch
-- **Branch**：`main`，目录 `/(root)`
-- 点 **Save**
+- **国内服务器**：重新运行一次 `.\deploy\upload.ps1 -Server IP -User root`
+- **GitHub Pages**：`git add -A; git commit -m "更新"; git push`
 
-等 1～2 分钟（页面顶部会显示部署进度），访问：
-
-```
-https://你的用户名.github.io/portfolio/
-```
-
-这一步成功就说明**全世界都能访问了**——可以先把这个链接发给朋友看效果，再慢慢弄域名。
+Nginx 那套配置里 HTML 不缓存，所以改完刷新就能看到；图片等静态资源缓存 30 天，
+如果换了图片文件名没变，记得 `Ctrl + F5` 或者改个文件名。
 
 ---
 
-## 第 4 步：买一个域名
+# 六、上线前检查清单
 
-推荐在国内平台买，支付宝付款、实名认证方便：
-
-| 平台 | 优点 | 备注 |
-| --- | --- | --- |
-| 阿里云（万网） | 支付宝、实名快 | 首年 .com 约 ¥60-80，续费约 ¥90 |
-| 腾讯云 | 同上，常有优惠券 | 同上 |
-| Cloudflare Registrar | 成本价、无溢价 | 需要国际信用卡 |
-
-买的时候注意：
-
-1. **域名要能自定义 DNS**（以上几家都行）
-2. 国内平台买的域名要做**实名认证**（上传身份证），不认证会被暂停解析
-3. 用 GitHub Pages 托管**不需要备案**（服务器在境外），备案是国内服务器才需要
-4. 建议同时把 `www` 和根域名都保留，两边都能打开
+- [ ] `assets/js/site-data.js` 里是真实的姓名、作品、联系方式
+- [ ] 不想公开的信息（私人手机号等）没有放上去
+- [ ] `index.html` 的 `<title>`、`<meta name="description">` 与内容一致
+- [ ] `og:image` 改成完整网址，分享才有缩略图：
+      `content="https://sanqi.design/assets/img/portrait-card.jpg"`
+- [ ] 手机打开一次：菜单、作品展开、复制联系方式正常
+- [ ] 备案通过后 30 天内，各省可能还要求做**公安联网备案**，按提示补充即可
 
 ---
 
-## 第 5 步：把域名绑到 GitHub Pages
+# 七、常见问题
 
-### 1）在 GitHub 里填域名
+**国内访问还是慢？**
+先看是不是 CDN/域名解析还没生效；再看服务器带宽（3M 带宽约等于 375KB/s，
+本站 434KB，首次加载约 1.2 秒，之后走缓存基本秒开）。真要更快可以升到 5M 带宽或加 CDN。
 
-仓库 → **Settings** → **Pages** → **Custom domain**，填入 `sanqi.design`（你的域名），点 Save。
-GitHub 会在仓库里自动生成一个 `CNAME` 文件，**以后不要删它**。
+**图片 404 / 样式丢失？**
+路径区分大小写，确认服务器上 `assets/img/portrait.webp` 大小写与代码一致。
 
-### 2）到域名商后台加解析
-
-以阿里云为例：域名控制台 → 解析设置 → 添加记录。**四条 A 记录 + 一条 CNAME**：
-
-| 记录类型 | 主机记录 | 记录值 | TTL |
-| --- | --- | --- | --- |
-| A | `@` | `185.199.108.153` | 600 |
-| A | `@` | `185.199.109.153` | 600 |
-| A | `@` | `185.199.110.153` | 600 |
-| A | `@` | `185.199.111.153` | 600 |
-| CNAME | `www` | `你的用户名.github.io` | 600 |
-
-（如果域名商支持 IPv6，可以再加四条 AAAA：`2606:50c0:8000::153`、`2606:50c0:8001::153`、`2606:50c0:8002::153`、`2606:50c0:8003::153`，不是必须。）
-
-### 3）等 DNS 生效
-
-一般 10 分钟到 2 小时。用 `ping sanqi.design` 看到 `185.199.108.153` 就说明生效了。
-
-### 4）开启强制 HTTPS
-
-回到 Settings → Pages，等 **Custom domain** 那一行出现绿色对勾（GitHub 自动签发证书，可能要等几分钟到几小时），
-然后勾上 **Enforce HTTPS**。之后 `http://` 会自动跳转到 `https://`。
-
----
-
-## 第 6 步：把分享图改成完整网址
-
-绑定域名成功后，改一下 `index.html` 里这一行，微信/Twitter 分享时才有缩略图：
-
-```html
-<meta property="og:image" content="https://sanqi.design/assets/img/portrait-card.jpg">
-```
-
-然后提交：
-
-```powershell
-cd "D:\AI项目\DSH\个人网站"
-git add -A
-git commit -m "配置自定义域名"
-git push
-```
-
----
-
-## 以后怎么更新内容
-
-```powershell
-cd "D:\AI项目\DSH\个人网站"
-# 改完 assets/js/site-data.js 之后
-git add -A
-git commit -m "更新作品"
-git push
-```
-
-等 1 分钟左右自动生效。浏览器有缓存的话按 `Ctrl + F5` 强刷。
-
----
-
-## 上线前检查清单
-
-- [ ] `assets/js/site-data.js`：名字、作品、联系方式都是真实内容
-- [ ] `index.html`：`<title>`、`<meta name="description">`、`og:image` 都对
-- [ ] 手机打开一次：菜单、作品展开、复制联系方式都正常
-- [ ] 不想公开的信息（私人手机号等）不要放上去
-
----
-
-## 常见问题
-
-**国内访问 GitHub Pages 慢 / 打不开？**
-这是 GitHub 在境内的网络问题，没有技术手段能彻底解决。域名可以保留，
-以后换成国内对象存储（阿里云 OSS / 腾讯云 COS）+ 备案域名，只需要把 DNS 记录改指过去，网站文件一行都不用动。
-
-**图片 404？**
-路径区分大小写，确认 `assets/img/portrait.webp` 大小写与代码一致。
-
-**改了没生效？**
-看仓库的 **Actions** 页有没有新部署；再按 `Ctrl + F5`。
+**备案要多久？**
+云厂商初审 1–2 天 + 管局 7–20 个工作日，各省不同，没有加急办法。
 
 **能不能加访问统计？**
-可以，接入 Umami / Plausible / 51LA 这类服务，在 `index.html` 的 `</body>` 前加一段脚本即可。
-
----
-
-## 备选方案（不想用 GitHub 时）
-
-- **Netlify Drop**：<https://app.netlify.com/drop>，把整个文件夹拖进去，10 秒上线，免备案
-- **Cloudflare Pages**：连 GitHub 仓库自动部署，免费额度大
-- **国内云**：需要已备案域名 + 对象存储静态网站托管，国内速度最好
+可以，接 Umami / Plausible / 51LA，在 `index.html` 的 `</body>` 前加一段脚本即可。
