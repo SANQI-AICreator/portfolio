@@ -1,12 +1,17 @@
-# deploy/upload.ps1
+﻿# deploy/upload.ps1
 # -----------------------------------------------------------------------------
-# 把网站打包上传到自己的服务器（国内云 / 香港轻量都适用）。
+# 一行命令把网站发到自己的服务器（大陆云 / 香港轻量都适用）。
 #
 # 用法（在项目根目录执行）：
 #   .\deploy\upload.ps1 -Server 1.2.3.4 -User root
-#   .\deploy\upload.ps1 -Server 1.2.3.4 -User root -RemotePath /var/www/sanqi -Domain sanqi.design
+#   .\deploy\upload.ps1 -Server 1.2.3.4 -User root -Domain sanqi.design
 #
-# 前提：服务器已装 nginx + unzip，且本机能用 ssh 登录（建议先配好免密）。
+# 如果提示「在此系统上禁止运行脚本」，二选一：
+#   powershell -ExecutionPolicy Bypass -File .\deploy\upload.ps1 -Server 1.2.3.4
+#   Set-ExecutionPolicy -Scope Process Bypass
+#
+# 前提：服务器已装 nginx；本机能 ssh 登录（建议先配好密钥免密）。
+# 脚本只会清空并重写 -RemotePath 指向的目录，不碰服务器上的其它东西。
 # -----------------------------------------------------------------------------
 param(
     [Parameter(Mandatory = $true)][string]$Server,
@@ -17,60 +22,66 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$root = Split-Path -Parent $PSScriptRoot
-$stage = Join-Path $env:TEMP "sanqi-deploy"
-$zip = Join-Path $env:TEMP "sanqi-site.zip"
 
-Write-Host "→ 收集站点文件…" -ForegroundColor Cyan
-if (Test-Path $stage) { Remove-Item $stage -Recurse -Force }
-New-Item -ItemType Directory -Path $stage | Out-Null
-
-# 只发布站点本身，不带 README / preview / deploy 之类的辅助文件
-$items = @("index.html", "404.html", "favicon.svg", "robots.txt", "assets")
-foreach ($item in $items) {
-    $src = Join-Path $root $item
-    if (Test-Path $src) {
-        Copy-Item $src -Destination $stage -Recurse -Force
-    } else {
-        Write-Warning "缺少 $item"
+foreach ($cmd in @("ssh", "scp")) {
+    if (-not (Get-Command $cmd -ErrorAction SilentlyContinue)) {
+        throw "找不到 $cmd 命令。Windows 10/11 自带 OpenSSH，可在「设置 → 应用 → 可选功能」里安装 OpenSSH 客户端。"
     }
 }
 
-if (Test-Path $zip) { Remove-Item $zip -Force }
-Compress-Archive -Path (Join-Path $stage "*") -DestinationPath $zip -CompressionLevel Optimal
-$size = [math]::Round((Get-Item $zip).Length / 1KB, 1)
-Write-Host "→ 打包完成：$zip（$size KB）" -ForegroundColor Cyan
-
-Write-Host "→ 上传到 $User@$Server …" -ForegroundColor Cyan
-scp $zip "${User}@${Server}:/tmp/sanqi-site.zip"
-
-$remoteCmd = @"
-set -e
-mkdir -p $RemotePath
-rm -rf $RemotePath/*
-unzip -oq /tmp/sanqi-site.zip -d $RemotePath
-rm -f /tmp/sanqi-site.zip
-chown -R www-data:www-data $RemotePath 2>/dev/null || chown -R nginx:nginx $RemotePath
-find $RemotePath -type d -exec chmod 755 {} \;
-find $RemotePath -type f -exec chmod 644 {} \;
-"@
-
-if (-not $SkipNginxReload) {
-    $remoteCmd += @"
-
-nginx -t
-systemctl reload nginx
-"@
+function Invoke-Remote {
+    param([string]$Command)
+    & ssh "${User}@${Server}" $Command
+    if ($LASTEXITCODE -ne 0) {
+        throw "远程命令失败（exit $LASTEXITCODE）：$Command"
+    }
 }
 
-Write-Host "→ 服务器上解压并重载 Nginx…" -ForegroundColor Cyan
-ssh "${User}@${Server}" $remoteCmd
+$root = Split-Path -Parent $PSScriptRoot
+$stage = Join-Path $env:TEMP "sanqi-deploy"
 
-Write-Host ""
-Write-Host "✔ 部署完成" -ForegroundColor Green
-if ($Domain) {
-    Write-Host "  访问 https://$Domain" -ForegroundColor Green
-} else {
-    Write-Host "  访问 http://$Server" -ForegroundColor Green
+try {
+    Write-Host "→ 收集站点文件…" -ForegroundColor Cyan
+    if (Test-Path $stage) { Remove-Item $stage -Recurse -Force }
+    New-Item -ItemType Directory -Path $stage | Out-Null
+
+    # 只发布站点本身：不含 README / DEPLOY / preview / deploy 这些辅助文件
+    foreach ($item in @("index.html", "404.html", "favicon.svg", "robots.txt", "assets")) {
+        $src = Join-Path $root $item
+        if (Test-Path $src) {
+            Copy-Item $src -Destination $stage -Recurse -Force
+        } else {
+            Write-Warning "缺少 $item，已跳过"
+        }
+    }
+
+    $count = (Get-ChildItem $stage -Recurse -File).Count
+
+    Write-Host "→ 清空远端目录 $RemotePath …" -ForegroundColor Cyan
+    Invoke-Remote "mkdir -p '$RemotePath' && rm -rf '$RemotePath'/*"
+
+    Write-Host "→ 上传 $count 个文件到 $User@$Server …" -ForegroundColor Cyan
+    & scp -r "$stage\*" "${User}@${Server}:$RemotePath"
+    if ($LASTEXITCODE -ne 0) {
+        throw "上传失败（exit $LASTEXITCODE），请检查服务器地址、账号和网络。"
+    }
+
+    $remote = "set -e; (chown -R www-data:www-data '$RemotePath' 2>/dev/null || chown -R nginx:nginx '$RemotePath'); find '$RemotePath' -type d -exec chmod 755 {} \; ; find '$RemotePath' -type f -exec chmod 644 {} \;"
+    if (-not $SkipNginxReload) {
+        $remote += " ; nginx -t ; systemctl reload nginx"
+    }
+
+    Write-Host "→ 设置权限并重载 Nginx…" -ForegroundColor Cyan
+    Invoke-Remote $remote
+
+    Write-Host ""
+    Write-Host "✔ 部署完成" -ForegroundColor Green
+    if ($Domain) {
+        Write-Host "  https://$Domain" -ForegroundColor Green
+    } else {
+        Write-Host "  http://$Server" -ForegroundColor Green
+    }
+    Write-Host "  浏览器有缓存的话按 Ctrl + F5 强刷" -ForegroundColor DarkGray
+} finally {
+    Remove-Item $stage -Recurse -Force -ErrorAction SilentlyContinue
 }
-Write-Host "  如浏览器有缓存，按 Ctrl + F5 强制刷新" -ForegroundColor DarkGray

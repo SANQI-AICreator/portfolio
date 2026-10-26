@@ -61,8 +61,17 @@ cd "D:\AI项目\DSH\个人网站"
 .\deploy\upload.ps1 -Server 你的服务器IP -User root -Domain sanqi.design
 ```
 
-脚本会自动打包 → `scp` 上传 → 服务器上解压到 `/var/www/sanqi` → `nginx -t` 并重载。
-（前提：本机能 `ssh root@IP` 登录，建议先配好免密登录。）
+脚本会：收集文件 → 清空远端 `/var/www/sanqi` → `scp` 上传 → 设权限 → `nginx -t` 并重载。
+
+> 如果提示「**在此系统上禁止运行脚本**」（Windows 默认策略），改用：
+>
+> ```powershell
+> powershell -ExecutionPolicy Bypass -File .\deploy\upload.ps1 -Server 你的服务器IP -User root
+> ```
+>
+> 或先执行 `Set-ExecutionPolicy -Scope Process Bypass`（只影响当前窗口，安全）。
+
+（前提：本机能 `ssh root@IP` 登录，建议先配好密钥免密。）
 
 **方式二：图形界面**
 
