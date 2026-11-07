@@ -1,0 +1,3829 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#070807" />
+<title>三七 — AI 独立开发者</title>
+<meta name="description" content="三七 — AI 独立开发者。一个人把想法做成能跑起来的产品：模型、界面、上线，全流程自己来。" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A0B0A'/%3E%3Cpath d='M6 5 L6 23 L10.3 18.9 L12.9 26 L16.4 24.6 L13.7 17.5 L21 17.3 Z' fill='%23C05BFF' stroke='%238BF3CE' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="三七 — AI 独立开发者" />
+<meta property="og:description" content="一个人把想法做成能跑起来的产品。AI 原生工具、智能体，和一些玩具。" />
+<meta property="og:locale" content="zh_CN" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="author" content="三七" />
+
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/Anton-400.woff2" crossorigin />
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/Inter-400.woff2" crossorigin />
+<link rel="preload" as="image" href="assets/resume.webp" />
+<link rel="preload" as="image" href="assets/work.webp" />
+
+<style>
+/* =========================================================================
+   0. TOKENS
+   Typographic language lifted from the reference: monochrome cinematic base,
+   one silver display weight, tiny wide-tracked caps for labels, one gradient
+   accent reserved for actions.
+   ========================================================================= */
+@font-face{font-family:'Anton';src:url('assets/fonts/Anton-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Inter';src:url('assets/fonts/Inter-300.woff2') format('woff2');font-weight:300;font-display:swap}
+@font-face{font-family:'Inter';src:url('assets/fonts/Inter-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Inter';src:url('assets/fonts/Inter-500.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'Inter';src:url('assets/fonts/Inter-600.woff2') format('woff2');font-weight:600;font-display:swap}
+@font-face{font-family:'JetBrains Mono';src:url('assets/fonts/JetBrainsMono-400.woff2') format('woff2');font-weight:400;font-display:swap}
+/* Anton is declared a second time at 900 so the CJK copy can ask for a heavy
+   weight without Chrome synthesising a fake bold on the Latin face. */
+@font-face{font-family:'Anton';src:url('assets/fonts/Anton-400.woff2') format('woff2');font-weight:900;font-display:swap}
+/* Noto Sans SC, subsetted to the 414 characters this page actually uses
+   (Google Fonts `text=` parameter), so the CJK face costs ~240 KB in total. */
+@font-face{font-family:'Noto SC';src:url('assets/fonts/NotoSansSC-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Noto SC';src:url('assets/fonts/NotoSansSC-500.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'Noto SC';src:url('assets/fonts/NotoSansSC-700.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'Noto SC';src:url('assets/fonts/NotoSansSC-900.woff2') format('woff2');font-weight:900;font-display:swap}
+
+:root{
+  --bg:#070807;
+  --ink:#EAEDE7;
+  --ink-2:rgba(234,237,231,.72);
+  --muted:rgba(234,237,231,.52);
+  --faint:rgba(234,237,231,.28);
+  --line:rgba(234,237,231,.14);
+  --sage:#8B8C79;
+
+  --acc-1:#F06BF5;
+  --acc-2:#9B37EA;
+  --acc-3:#7A2BF0;
+  --acc-glow:rgba(190,70,235,.5);
+
+  --silver:linear-gradient(178deg,#FBFDF9 0%,#E4E8E1 26%,#B9BFB6 52%,#868C84 74%,#C3C9C0 100%);
+
+  --pad:clamp(18px,4.1vw,66px);
+  --nav-h:clamp(64px,8.2vh,90px);
+  --panel-w:clamp(340px,33vw,480px);
+
+  --ease:cubic-bezier(.22,.61,.24,1);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+
+  --page-h:1107vh;
+}
+
+/* =========================================================================
+   1. BASE
+   ========================================================================= */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{
+  background:var(--bg);
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+  -webkit-text-size-adjust:100%;
+  /* the wheel turns pages, it never scrolls: the whole site is a deck of four
+     full-screen pages whose progress is a virtual value, not scrollY */
+  overflow:hidden;
+  height:100%;
+  overscroll-behavior:none;
+}
+html::-webkit-scrollbar{width:0;height:0}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:Inter,'Noto SC','PingFang SC','Microsoft YaHei',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-weight:400;
+  font-size:16px;
+  line-height:1.7;
+  overflow:hidden;
+  height:100%;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+body.is-locked{overflow:hidden}
+img,video{display:block;max-width:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,h4,p,ol,ul,figure{margin:0;padding:0}
+ol,ul{list-style:none}
+::selection{background:var(--acc-2);color:#fff}
+
+.scroll-space{display:none}
+
+/* shared type */
+.eyebrow{
+  font-size:10px;line-height:1.4;font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
+  display:flex;align-items:center;gap:.9em;
+}
+.eyebrow::before{
+  content:"";width:26px;height:1px;background:currentColor;opacity:.6;flex:none;
+}
+.eyebrow--plain::before{display:none}
+
+.display{
+  font-family:Anton,'Noto SC','Arial Black',Impact,sans-serif;
+  font-weight:900;text-transform:uppercase;
+  line-height:1;letter-spacing:0;
+  /* flat near-white instead of a background-clip:text silver gradient: the
+     gradient version renders the masthead at ~70% scale inside this layout */
+  color:#F4F6F0;
+  text-shadow:0 1px 0 rgba(255,255,255,.18),0 22px 46px rgba(0,0,0,.32);
+}
+.mono{font-family:'JetBrains Mono','Noto SC',ui-monospace,monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+
+/* =========================================================================
+   2. STAGE — fixed film + plates
+   ========================================================================= */
+.stage{position:fixed;inset:0;z-index:0;overflow:hidden;background:var(--bg);isolation:isolate}
+
+.film{
+  position:absolute;inset:0;
+  will-change:transform;
+  transform-origin:50% 46%;
+}
+.film__el{
+  position:fixed;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;object-position:50% 44%;
+  filter:saturate(.94) contrast(1.02);
+  will-change:transform;
+}
+/* the gaze portrait: 264 webp frames of the turntable take, drawn on a canvas.
+   It owns the first screen (the pointer steers it, nothing plays on its own);
+   the moment the wheel takes over it fades and the film underneath runs the
+   scroll story. Engine ported from the 追视 reference build. */
+.gaze{
+  position:absolute;inset:0;z-index:2;
+  opacity:0;pointer-events:none;overflow:hidden;
+  transition:opacity .42s var(--ease-out);
+  /* flat wall colour sampled from the footage's own left/right edges: the
+     radial version used to darken the page corners, which read as a shadow */
+  background:
+    linear-gradient(180deg,#8A8F7C 0%,#878C79 42%,#7F8472 74%,#767B69 100%);
+}
+.stage.is-gaze .gaze{opacity:1}
+.gaze__canvas{
+  position:absolute;left:50%;top:50%;
+  height:100%;width:auto;aspect-ratio:4 / 5;
+  transform:translate(-50%,-50%);
+  will-change:transform;
+  filter:saturate(.97) contrast(1.015);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 11%,#000 89%,transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0,#000 11%,#000 89%,transparent 100%);
+}
+
+/* full-bleed character plates (page 2 / page 3 reference art) */
+.plate{
+  position:absolute;inset:0;opacity:0;
+  will-change:transform,opacity;
+  pointer-events:none;
+  z-index:2;
+}
+/* opaque sage bed under the plates: during the resume -> work dissolve the two
+   plates sit at partial opacity, and without this the film's own take would
+   show through as a third character in the middle of the handover */
+.plate-bed{
+  position:absolute;inset:0;z-index:1;opacity:0;pointer-events:none;
+  background:radial-gradient(120% 95% at 50% 36%,#8B9079 0%,#868B76 34%,#7C816C 62%,#676C5A 86%,#4A4E41 100%);
+}
+.plate__img{
+  position:fixed;inset:0;width:100%;height:100%;
+  object-fit:cover;
+  transform:scale(1.04);
+  will-change:transform;
+}
+.plate--resume .plate__img{object-position:42% 46%}
+.plate--work .plate__img{object-position:56% 48%}
+.plate__scrim{position:absolute;inset:0;pointer-events:none}
+/* only a whisper under the nav bar — the figure runs clean to every edge and
+   readability is carried by the glass panel instead of a full-bleed wash */
+.plate--resume .plate__scrim,
+.plate--work .plate__scrim{
+  background:linear-gradient(180deg,rgba(7,8,7,.34) 0%,rgba(7,8,7,.12) 9%,rgba(7,8,7,0) 16%);
+}
+
+/* hero scrim, sits above the film */
+.scrim-hero{
+  position:absolute;inset:0;pointer-events:none;
+  background:none;
+  will-change:opacity;
+}
+
+/* atmosphere */
+.grain{
+  position:fixed;inset:0;z-index:7;pointer-events:none;opacity:.075;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  background-size:160px 160px;
+}
+
+/* =========================================================================
+   3. NAV
+   ========================================================================= */
+.nav{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:40;
+  display:flex;align-items:center;
+  padding:0 var(--pad);
+  padding-top:env(safe-area-inset-top);
+  font-size:10.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;
+  transition:opacity .9s var(--ease) .1s,transform .9s var(--ease) .1s;
+}
+.nav__mark{
+  width:34px;height:34px;border-radius:50%;
+  display:grid;place-items:center;flex:none;
+  background:rgba(24,26,23,.55);
+  border:1px solid rgba(255,255,255,.10);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  transition:background .4s var(--ease),transform .5s var(--ease-out);
+}
+.nav__mark svg{width:13px;height:13px;stroke:var(--ink);fill:none;stroke-width:1.4;transition:transform .5s var(--ease-out)}
+.nav__mark:hover{background:rgba(255,255,255,.14);transform:scale(1.06)}
+.nav__mark:hover svg{transform:rotate(-45deg)}
+.nav__brand{
+  font-family:Anton;font-size:15px;letter-spacing:.06em;font-weight:400;
+  margin-left:14px;margin-right:auto;
+}
+/* ---- nav links: gooey metaball pill (ported from React Bits GooeyNav) ---- */
+.gooey-nav{
+  position:relative;display:inline-flex;align-items:center;
+  margin-right:clamp(0px,2vw,44px);
+  padding:6px;border-radius:999px;
+  background:rgba(18,21,17,.5);
+  box-shadow:
+    0 24px 48px -22px rgba(0,0,0,.9),
+    0 6px 16px -10px rgba(0,0,0,.55),
+    inset 0 0 0 1px rgba(255,255,255,.09),
+    inset 0 1px 0 rgba(255,255,255,.07);
+  -webkit-backdrop-filter:blur(20px) saturate(1.5);
+  backdrop-filter:blur(20px) saturate(1.5);
+}
+.gooey-stage{position:relative;display:block}
+.gooey-blob{
+  position:absolute;left:-56px;top:-56px;right:-56px;bottom:-56px;
+  background:#F1F3EC;pointer-events:none;z-index:0;
+  clip-path:path("M0,0Z");
+}
+.gooey-hover{
+  position:absolute;left:0;top:0;width:0;height:0;border-radius:999px;
+  background:rgba(255,255,255,.10);opacity:0;pointer-events:none;z-index:0;
+}
+.gooey-links{
+  position:relative;z-index:1;display:flex;align-items:center;gap:4px;
+  margin:0;padding:0;list-style:none;
+}
+.gooey-links--ink{
+  position:absolute;inset:0;z-index:2;pointer-events:none;color:#0A0B0A;
+  clip-path:path("M0,0Z");
+}
+.gooey-item{display:flex}
+.gooey-link{
+  display:inline-flex;align-items:center;height:38px;padding:0 22px;
+  border:0;background:none;cursor:pointer;white-space:nowrap;
+  font-family:inherit;font-size:9.5px;letter-spacing:.16em;font-weight:500;
+  color:rgba(234,237,231,.66);
+  transition:color .3s var(--ease);
+  -webkit-tap-highlight-color:transparent;
+}
+.gooey-link:focus-visible{outline:2px solid rgba(244,246,240,.7);outline-offset:3px;border-radius:999px}
+.gooey-links .gooey-link:hover,
+.gooey-links .gooey-link.is-here{color:#F4F6F0}
+.gooey-links--ink .gooey-link{color:#0A0B0A}
+.nav__status{display:flex;align-items:center;gap:8px;color:var(--muted);letter-spacing:.14em}
+.nav__dot{width:5px;height:5px;border-radius:50%;background:#9BE39B;box-shadow:0 0 0 0 rgba(155,227,155,.7);animation:pulse 2.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(155,227,155,.55)}70%{box-shadow:0 0 0 7px rgba(155,227,155,0)}100%{box-shadow:0 0 0 0 rgba(155,227,155,0)}}
+
+/* =========================================================================
+   4. CHAPTERS (fixed copy layers)
+   ========================================================================= */
+.chapter{
+  position:fixed;inset:0;z-index:5;
+  opacity:0;pointer-events:none;
+  will-change:opacity,transform;
+}
+.chapter__inner{
+  position:absolute;inset:0;
+  padding:calc(var(--nav-h) + 0.4vh) var(--pad) calc(var(--pad) * .72);
+  padding-bottom:calc(var(--pad) * .72 + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;
+}
+
+/* =========================================================================
+   5. HERO — editorial three-zone composition, after the reference screenshot:
+      headline / lead / CTA stacked on the left, the figure in the middle,
+      two right-aligned stat blocks on the right, a thin footer row below
+   ========================================================================= */
+.hero__inner{justify-content:flex-start}
+.hero__grid{position:relative;flex:1 1 auto;min-height:0}
+
+.hero__col{
+  position:absolute;left:0;top:clamp(0px,1.4vh,16px);
+  width:min(32vw,432px);
+  display:flex;flex-direction:column;align-items:flex-start;
+}
+.hero__kicker{
+  display:flex;align-items:center;gap:12px;margin-bottom:clamp(9px,1.5vh,16px);
+  font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#3C4038;
+  white-space:nowrap;
+}
+.hero__kicker i{display:block;width:18px;height:1px;background:currentColor;opacity:.45}
+.hero__title{
+  font-size:clamp(34px,6.5vw,96px);
+  line-height:1;
+  letter-spacing:0;
+  color:#F7F9F2;
+  text-shadow:0 2px 34px rgba(0,0,0,.5);
+}
+.hero__reveal{display:block;opacity:0;transform:translateY(22px);
+  transition:opacity 1s var(--ease) .16s,transform 1.1s var(--ease-out) .16s}
+.hero__lead{
+  margin-top:clamp(14px,2.4vh,26px);max-width:22em;
+  font-size:clamp(13.5px,1.4vw,19.5px);line-height:1.75;color:rgba(36,39,32,.84);
+}
+.hero__lead span{display:block}
+/* hero CTA: specular glass pill (ported from React Bits <SpecularButton />) */
+.hero__cta{
+  --sb-radius:999px;
+  --sb-tint:#0A0C0A;
+  --sb-tint-opacity:0.46;
+  --sb-blur:10px;
+  --sb-text-color:#F6F8F1;
+  position:relative;isolation:isolate;
+  margin-top:clamp(16px,2.8vh,30px);
+  display:inline-flex;align-items:center;gap:16px;
+  padding:7px 7px 7px 24px;border:0;
+  border-radius:var(--sb-radius);
+  font-family:inherit;font-size:13px;font-weight:700;letter-spacing:.06em;line-height:1;
+  color:var(--sb-text-color);
+  background:color-mix(in srgb, var(--sb-tint) calc(var(--sb-tint-opacity) * 100%), transparent);
+  box-shadow:
+    0 22px 48px -20px rgba(0,0,0,.95),
+    inset 0 1px 0 rgba(255,255,255,.07);
+  -webkit-backdrop-filter:blur(var(--sb-blur));backdrop-filter:blur(var(--sb-blur));
+  cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent;
+  transition:transform .3s cubic-bezier(.2,.8,.2,1),background .35s var(--ease);
+}
+.hero__cta:active{transform:scale(.975)}
+.hero__cta:focus-visible{outline:2px solid rgba(246,248,241,.6);outline-offset:4px}
+.hero__cta:hover{background:color-mix(in srgb, var(--sb-tint) 56%, transparent)}
+.spec-btn__light{
+  position:absolute;z-index:1;display:block;pointer-events:none;
+  inset:-24px;width:calc(100% + 48px);height:calc(100% + 48px);
+}
+.spec-btn__label{position:relative;z-index:2;display:block;padding-left:2px}
+.hero__chip{
+  position:relative;z-index:2;
+  display:grid;place-items:center;width:36px;height:36px;border-radius:50%;
+  background:#F2F4EE;color:#0A0B0A;
+  box-shadow:0 6px 14px -8px rgba(0,0,0,.8);
+  transition:transform .45s var(--ease-out);
+}
+.hero__cta:hover .hero__chip{transform:rotate(45deg)}
+.hero__chip svg{width:14px;height:14px}
+
+.hero__stat{position:absolute;right:0;width:min(28vw,390px);text-align:right}
+.hero__stat--a{top:clamp(4px,10vh,110px)}
+.hero__stat--b{top:clamp(300px,56vh,600px)}
+.hero__stat h3{font-size:clamp(19px,2.15vw,33px);line-height:1.06;font-weight:900;letter-spacing:0;color:#26291F}
+.hero__stat h3 sup{font-size:.6em;margin-left:.06em}
+.hero__stat p{margin-top:.7em;font-size:clamp(12.5px,1.3vw,18px);line-height:1.7;color:rgba(36,39,32,.68)}
+
+.hero__foot{
+  position:absolute;left:0;right:0;bottom:0;
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+    text-shadow:0 1px 9px rgba(0,0,0,.75);
+}
+.hud{display:flex;align-items:center;gap:10px;color:var(--faint)}
+.hud__bar{width:46px;height:1px;background:rgba(234,237,231,.16);position:relative;overflow:hidden}
+.hud__bar i{position:absolute;inset:0;background:rgba(234,237,231,.85);transform-origin:0 50%;transform:scaleX(0)}
+.scrollcue{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:9.5px;letter-spacing:.28em;text-transform:uppercase}
+.scrollcue span{position:relative;width:1px;height:30px;background:rgba(234,237,231,.18);overflow:hidden}
+.scrollcue span::after{content:"";position:absolute;inset:0;background:var(--ink);animation:cue 2.2s var(--ease) infinite}
+@keyframes cue{0%{transform:translateY(-100%)}60%{transform:translateY(100%)}100%{transform:translateY(100%)}}
+
+/* buttons */
+.btn{
+  position:relative;display:inline-flex;align-items:center;gap:.95em;
+  padding:1.15em 1.85em;border-radius:999px;overflow:hidden;
+  font-size:10.5px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#fff;
+  background:linear-gradient(100deg,var(--acc-1),var(--acc-2) 52%,var(--acc-3));
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 12px 34px -10px var(--acc-glow),inset 0 1px 0 rgba(255,255,255,.42);
+  transition:transform .5s var(--ease-out),box-shadow .5s var(--ease);
+  white-space:nowrap;
+}
+.btn::after{
+  content:"";position:absolute;top:0;left:0;width:60%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.38),transparent);
+  transform:translateX(-160%);transition:transform .9s var(--ease-out);
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 18px 44px -10px var(--acc-glow),inset 0 1px 0 rgba(255,255,255,.5)}
+.btn:hover::after{transform:translateX(260%)}
+.btn__arw{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.5;transition:transform .5s var(--ease-out)}
+.btn:hover .btn__arw{transform:translate(2px,-2px)}
+
+/* =========================================================================
+   6. RESUME PANEL
+   ========================================================================= */
+.resume{justify-content:center;align-items:flex-end}
+.panel{
+  width:var(--panel-w);max-width:100%;
+  display:flex;flex-direction:column;
+  gap:clamp(9px,1.5vh,16px);
+  /* readability lives in this pane, not in a full-bleed scrim */
+  padding:clamp(18px,2.6vh,30px) clamp(18px,2vw,28px);
+  border-radius:16px;
+  background:
+    linear-gradient(122deg,rgba(255,255,255,.055) 0%,rgba(255,255,255,.012) 26%,rgba(255,255,255,0) 46%),
+    linear-gradient(158deg,rgba(10,12,10,.58) 0%,rgba(10,12,10,.48) 58%,rgba(10,12,10,.34) 100%);
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 24px 60px -30px rgba(0,0,0,.6);
+  -webkit-backdrop-filter:blur(16px) saturate(1.15);
+  backdrop-filter:blur(16px) saturate(1.15);
+}
+.panel__label{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.panel__label .mono{color:var(--faint)}
+.panel__title{
+  font-family:Anton,'Noto SC','Arial Black',Impact,sans-serif;font-weight:900;
+  font-size:clamp(32px,3.8vw,54px);line-height:1.06;letter-spacing:0;
+  text-transform:uppercase;
+  background:linear-gradient(178deg,#FBFDF9,#DFE3DC 40%,#9AA096 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  /* the pane can still miss a bright edge: drop-shadow works on gradient text */
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.35));
+}
+.panel__lead{font-size:clamp(12px,.98vw,13.5px);line-height:1.85;color:rgba(234,237,231,.95);max-width:44ch;font-weight:300;letter-spacing:.01em;text-shadow:0 1px 1px rgba(0,0,0,.25)}
+
+/* slider */
+.slider{position:relative;margin-top:clamp(4px,1vh,10px)}
+.slider__head{display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:14px}
+.tabs{display:flex;gap:clamp(12px,1.6vw,24px)}
+.tab{
+  position:relative;font-size:9.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--faint);padding:2px 0;transition:color .4s var(--ease);
+}
+.tab::after{content:"";position:absolute;left:0;right:0;bottom:-11px;height:1px;background:var(--ink);transform:scaleX(0);transition:transform .55s var(--ease-out)}
+.tab.is-on{color:var(--ink)}
+.tab.is-on::after{transform:scaleX(1)}
+.tab:hover{color:var(--ink-2)}
+.slider__count{font-family:'JetBrains Mono','Noto SC',monospace;font-size:10px;letter-spacing:.12em;color:var(--faint)}
+.slider__window{overflow:hidden;cursor:grab;touch-action:pan-y}
+.slider__window.is-drag{cursor:grabbing}
+.slider__track{display:flex;will-change:transform;transition:transform .75s var(--ease-out)}
+.slider__track.no-t{transition:none}
+.slide{flex:0 0 100%;min-width:0;user-select:none}
+
+.timeline{display:flex;flex-direction:column}
+.timeline li{
+  display:grid;grid-template-columns:76px 1fr;gap:clamp(12px,1.4vw,20px);
+  position:relative;
+  padding:clamp(9px,1.5vh,15px) 0;
+}
+.timeline li:first-child{padding-top:0}
+.timeline li + li::before{
+  content:"";position:absolute;top:0;left:clamp(6px,1vw,14px);right:clamp(6px,1vw,14px);
+  height:1px;background:var(--line);
+}
+.t-year{font-family:'JetBrains Mono','Noto SC',monospace;font-size:9.5px;letter-spacing:.1em;color:rgba(234,237,231,.6);padding-top:.35em;white-space:nowrap}
+.t-role{font-size:clamp(13px,1.05vw,15px);font-weight:500;letter-spacing:.01em;line-height:1.35}
+.t-org{font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:rgba(234,237,231,.82);margin-top:.45em}
+.t-note{font-size:12px;line-height:1.8;color:rgba(234,237,231,.86);margin-top:.5em;font-weight:300;max-width:38ch;letter-spacing:.01em}
+
+.skills{display:flex;flex-direction:column;gap:clamp(8px,1.4vh,13px)}
+.skill{display:grid;grid-template-columns:1fr auto;gap:6px 14px;align-items:baseline}
+.skill__name{font-size:11.5px;letter-spacing:.06em;color:var(--ink-2)}
+.skill__val{font-family:'JetBrains Mono','Noto SC',monospace;font-size:9.5px;color:var(--faint)}
+.skill__bar{grid-column:1/-1;height:1px;background:rgba(234,237,231,.14);position:relative;overflow:hidden}
+.skill__bar i{position:absolute;inset:0;background:linear-gradient(90deg,rgba(234,237,231,.85),rgba(234,237,231,.35));transform-origin:0 50%;transform:scaleX(0);transition:transform 1.1s var(--ease-out)}
+.slide.is-on .skill__bar i{transform:scaleX(var(--v))}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:clamp(12px,2vh,20px)}
+.tag{border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+
+.slider__foot{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:clamp(12px,2vh,20px)}
+.slider__prog{flex:1;height:1px;background:rgba(234,237,231,.13);position:relative;overflow:hidden}
+.slider__prog i{position:absolute;left:0;top:0;bottom:0;width:33.333%;background:rgba(234,237,231,.75);transform:translateX(0);transition:transform .75s var(--ease-out)}
+.slider__nav{display:flex;gap:8px}
+.snav{
+  width:34px;height:34px;border-radius:50%;border:1px solid var(--line);
+  display:grid;place-items:center;color:var(--ink-2);
+  transition:background .4s var(--ease),border-color .4s,color .4s,transform .4s var(--ease-out);
+}
+.snav svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.4}
+.snav:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.3);color:#fff}
+.snav:active{transform:scale(.94)}
+.snav[disabled]{opacity:.28;pointer-events:none}
+
+.stats{display:flex;gap:clamp(16px,2.4vw,34px);border-top:1px solid var(--line);padding-top:clamp(10px,1.6vh,16px);margin-top:clamp(2px,1vh,10px)}
+.stat__n{font-family:Anton;font-size:clamp(18px,1.7vw,24px);letter-spacing:.02em;line-height:1}
+.stat__l{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin-top:6px}
+
+/* =========================================================================
+   7. WORK PANEL / CAROUSEL
+   ========================================================================= */
+.work{justify-content:center;align-items:flex-start}
+.work .panel{width:min(100%,clamp(360px,44vw,660px))}
+.dc{
+  position:relative;margin-top:clamp(8px,1.6vh,16px);
+  height:380px;
+  display:flex;align-items:center;justify-content:center;
+  perspective:1400px;perspective-origin:50% 50%;
+  touch-action:pan-y;outline:none;user-select:none;cursor:grab;
+  overflow:hidden;
+}
+.dc.is-drag{cursor:grabbing}
+.dc::before{
+  content:"";position:absolute;left:50%;top:52%;width:78%;height:82%;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(50% 50% at 50% 50%,rgba(154,55,234,.30) 0%,rgba(122,43,240,.12) 46%,transparent 72%);
+  filter:blur(18px);pointer-events:none;z-index:0;
+}
+.dc__stage{position:absolute;inset:0;z-index:1;transform-style:preserve-3d}
+
+/* one poster card — the gradient art of the old `.card__art`, now full-bleed */
+.dc-card{
+  position:absolute;top:50%;left:50%;width:300px;height:380px;
+  margin:0;padding:0;border:0;border-radius:18px;overflow:hidden;
+  background:#0b0d12;color:inherit;text-align:left;cursor:pointer;
+  transform:translate(-50%,-50%);transform-origin:center center;
+  box-shadow:0 30px 60px -20px rgba(0,0,0,.65),0 8px 20px -10px rgba(0,0,0,.5);
+  will-change:transform,opacity,filter;
+}
+.dc-card__art{
+  position:absolute;inset:0;
+  background-color:var(--c);
+  background-image:
+    linear-gradient(118deg,transparent 47.6%,rgba(255,255,255,.07) 47.9%,rgba(255,255,255,.07) 48.6%,transparent 48.9%),
+    radial-gradient(90% 60% at 78% 4%,rgba(240,107,245,.18) 0%,transparent 62%),
+    var(--img,none);
+  background-size:cover,cover,cover;
+  background-position:center,center,center;
+  background-repeat:no-repeat,no-repeat,no-repeat;
+}
+.dc-card__art::before{
+  content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 4px);
+  opacity:.35;mix-blend-mode:overlay;
+}
+.dc-card__art::after{
+  content:"";position:absolute;left:50%;top:50%;width:62%;aspect-ratio:1;border-radius:50%;
+  transform:translate(-50%,-50%);
+  border:1px solid rgba(255,255,255,.24);
+  box-shadow:inset 0 0 70px rgba(255,255,255,.10);
+}
+.dc-card__scrim{
+  position:absolute;left:0;right:0;bottom:0;height:52%;
+  background:
+    linear-gradient(0deg,rgba(6,7,6,.9) 0%,rgba(6,7,6,.46) 44%,rgba(6,7,6,0) 74%),
+    linear-gradient(180deg,rgba(6,7,6,.52) 0%,rgba(6,7,6,.12) 16%,rgba(6,7,6,0) 32%);
+}
+.dc-card__kind{
+  position:absolute;left:16px;top:15px;
+  font-family:'JetBrains Mono','Noto SC',monospace;font-size:8.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:rgba(255,255,255,.78);text-shadow:0 1px 6px rgba(0,0,0,.6);
+}
+.dc-card__num{
+  position:absolute;right:14px;top:8px;
+  font-family:Anton;font-size:74px;line-height:.82;letter-spacing:-.02em;
+  color:rgba(255,255,255,.24);text-shadow:0 2px 12px rgba(0,0,0,.45);
+}
+.dc-card__meta{
+  position:absolute;left:17px;right:17px;bottom:15px;
+  display:flex;flex-direction:column;gap:5px;
+}
+.dc-card__title{
+  font-family:Anton,'Noto SC',sans-serif;font-weight:900;
+  font-size:clamp(17px,1.5vw,21px);letter-spacing:.03em;line-height:1.1;
+  text-transform:uppercase;color:#fff;
+}
+.dc-card__sub{
+  font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(234,237,231,.58);
+}
+.dc-card__tint{position:absolute;inset:0;background:#05060a;opacity:0;mix-blend-mode:multiply;pointer-events:none}
+
+/* arrows + dots */
+.dc__arrow{
+  position:absolute;top:50%;z-index:30;width:42px;height:42px;margin-top:-21px;
+  display:grid;place-items:center;border-radius:50%;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(14,16,14,.42);color:#F2F4EE;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  transition:background .3s var(--ease),border-color .3s var(--ease),transform .3s var(--ease-out);
+}
+.dc__arrow--prev{left:12px}
+.dc__arrow--next{right:12px}
+.dc__arrow:hover{background:rgba(26,30,26,.72);border-color:rgba(255,255,255,.32)}
+.dc__arrow:active{transform:scale(.94)}
+.dc__arrow svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.dc__dots{display:flex;align-items:center;gap:6px}
+.dc__dot{
+  width:6px;height:6px;padding:0;border:0;border-radius:999px;
+  background:rgba(234,237,231,.28);
+  transition:width .38s var(--ease-out),background .38s var(--ease);
+}
+.dc__dot.is-on{width:20px;background:linear-gradient(90deg,#F06BF5,#7A2BF0)}
+.carousel__count{font-family:'JetBrains Mono','Noto SC',monospace;font-size:10px;letter-spacing:.12em;color:var(--ink-2);white-space:nowrap}
+.carousel__foot{display:flex;align-items:center;gap:clamp(14px,2vw,26px);margin-top:clamp(10px,1.8vh,18px)}
+.carousel__spacer{flex:1;height:1px;background:rgba(234,237,231,.14)}
+.carousel__hint{font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);white-space:nowrap}
+.work__caption{
+  position:absolute;right:var(--pad);bottom:calc(var(--pad) * .92);
+  display:flex;align-items:center;gap:10px;
+  font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:rgba(234,237,231,.42);
+}
+.work__caption i{width:34px;height:1px;background:currentColor;display:block}
+
+/* =========================================================================
+   8. CONTACT
+   ========================================================================= */
+.contact{justify-content:flex-end}
+/* the last page reuses the hero's editorial grid (kicker / stacked display /
+   lead / two right-aligned blocks / foot row) so both ends of the film share
+   one typographic system instead of a card */
+.contact__scrim{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(0deg,rgba(5,6,5,.34) 0%,rgba(5,6,5,.12) 5%,rgba(5,6,5,0) 12%);
+}
+.contact .hero__title{
+  font-size:clamp(34px,6.2vw,92px);
+  text-shadow:0 2px 22px rgba(0,0,0,.55),0 1px 3px rgba(0,0,0,.4);
+}
+.contact__links{
+  display:flex;flex-direction:column;gap:.5em;align-items:flex-end;
+  font-family:'JetBrains Mono','Noto SC',monospace;
+  font-size:clamp(11px,1.05vw,14px);letter-spacing:.14em;text-transform:uppercase;
+  color:#3C4038;
+}
+.contact__links a{transition:color .3s var(--ease)}
+.contact__links a:hover{color:#1E211A}
+.contact__foot{
+  position:absolute;left:0;right:0;bottom:0;
+  display:flex;justify-content:space-between;align-items:flex-end;gap:18px;
+  font-family:'JetBrains Mono','Noto SC',monospace;
+  font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(36,39,32,.66);
+  width:100%;
+}
+.contact__mail{
+  display:inline-flex;align-items:center;gap:12px;
+  margin-top:clamp(16px,2.4vh,26px);
+  padding:2px 4px 10px 2px;
+  border:0;border-bottom:1px solid rgba(36,39,32,.28);background:none;
+  font-family:Anton,'Noto SC',sans-serif;font-size:clamp(19px,2.05vw,28px);letter-spacing:.01em;text-transform:none;
+  color:#26291F;cursor:pointer;
+  transition:color .3s var(--ease),border-color .3s var(--ease);
+}
+.contact__mail:hover{color:#9B37EA;border-color:#9B37EA}
+.contact__mail .mail-ico{flex:0 0 auto;width:19px;height:19px;color:#9B37EA}
+.contact__mail .mail-ok{flex:0 0 auto;font-family:'JetBrains Mono','Noto SC',monospace;font-size:9px;letter-spacing:.18em;color:#9B37EA;opacity:0;transition:opacity .3s var(--ease)}
+.contact__mail.is-copied .mail-ok{opacity:1}
+
+/* =========================================================================
+   9. SIDE RAIL / PROGRESS
+   ========================================================================= */
+.rail{
+  position:fixed;right:calc(var(--pad) * .42);top:50%;transform:translateY(-50%);
+  z-index:41;display:flex;flex-direction:column;align-items:center;gap:14px;
+  pointer-events:none;
+}
+.rail__track{width:1px;height:clamp(120px,22vh,220px);background:rgba(234,237,231,.16);position:relative}
+.rail__fill{position:absolute;left:0;top:0;width:100%;height:100%;background:var(--ink);transform-origin:50% 0;transform:scaleY(0);opacity:.85}
+.rail__ticks{position:absolute;inset:0}
+.rail__tick{position:absolute;left:50%;transform:translate(-50%,-50%);width:3px;height:3px;border-radius:50%;background:rgba(234,237,231,.35);transition:background .4s,transform .4s}
+.rail__tick.is-on{background:#fff;transform:translate(-50%,-50%) scale(1.7)}
+.rail__num{font-family:'JetBrains Mono','Noto SC',monospace;font-size:9px;letter-spacing:.1em;color:var(--faint);writing-mode:vertical-rl;transition:color .4s}
+.rail__num.is-on{color:var(--ink)}
+
+/* =========================================================================
+   10. PROJECT DETAIL
+   ========================================================================= */
+.detail{
+  position:fixed;inset:0;z-index:60;display:grid;place-items:center;
+  padding:clamp(12px,3vw,44px);
+  opacity:0;pointer-events:none;visibility:hidden;
+  transition:opacity .55s var(--ease),visibility .55s;
+}
+.detail.is-open{opacity:1;pointer-events:auto;visibility:visible}
+.detail__backdrop{position:absolute;inset:0;background:rgba(5,6,5,.46);backdrop-filter:blur(9px) saturate(1.05);-webkit-backdrop-filter:blur(9px) saturate(1.05)}
+.detail__panel{
+  position:relative;width:min(1080px,100%);max-height:min(86vh,860px);
+  display:grid;grid-template-columns:1.05fr .95fr;
+  background:
+    linear-gradient(140deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.02) 30%,rgba(255,255,255,0) 52%),
+    linear-gradient(158deg,rgba(18,21,18,.82) 0%,rgba(14,16,14,.74) 60%,rgba(12,14,12,.68) 100%);
+  border:1px solid rgba(255,255,255,.14);
+  -webkit-backdrop-filter:blur(26px) saturate(1.2);backdrop-filter:blur(26px) saturate(1.2);
+  border-radius:18px;overflow:hidden;
+  transform:translateY(26px) scale(.985);opacity:0;
+  transition:transform .7s var(--ease-out),opacity .55s var(--ease);
+  box-shadow:0 50px 110px -40px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.12);
+}
+.detail.is-open .detail__panel{transform:none;opacity:1;transition-delay:.05s}
+.detail__art{
+  position:relative;min-height:260px;overflow:hidden;
+  background-color:var(--c);
+  background-image:
+    linear-gradient(180deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,0) 34%),
+    var(--img,none);
+  background-size:auto,cover;
+  background-position:center,center;
+  background-repeat:no-repeat,no-repeat;
+}
+.detail__art::after{
+  content:"";position:absolute;left:50%;top:50%;width:62%;aspect-ratio:1;border-radius:50%;
+  transform:translate(-50%,-50%);border:1px solid rgba(255,255,255,.16);
+}
+.detail__num{
+  position:absolute;left:-.03em;bottom:-.16em;
+  font-family:Anton;font-size:clamp(120px,14vw,210px);line-height:.8;color:rgba(255,255,255,.17);
+}
+.detail__body{
+  padding:clamp(22px,3vw,44px);overflow:auto;display:flex;flex-direction:column;gap:18px;
+  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent;
+}
+.detail__close{
+  position:absolute;right:14px;top:14px;z-index:2;
+  width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(10,11,10,.6);border:1px solid rgba(255,255,255,.16);color:#fff;
+  transition:background .4s,transform .5s var(--ease-out);
+}
+.detail__close:hover{background:rgba(255,255,255,.16);transform:rotate(90deg)}
+.detail__close svg{width:12px;height:12px;stroke:currentColor;stroke-width:1.5;fill:none}
+.detail__kind{font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:rgba(234,237,231,.6)}
+.detail__title{font-family:Anton,'Noto SC',sans-serif;font-weight:900;font-size:clamp(34px,3.6vw,54px);line-height:1.06;text-transform:uppercase;letter-spacing:.01em}
+.detail__meta{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 20px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 0}
+.detail__meta dt{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:rgba(234,237,231,.5);margin-bottom:5px}
+.detail__meta dd{margin:0;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(234,237,231,.9)}
+.detail__text{font-size:13px;line-height:1.75;color:rgba(234,237,231,.80);font-weight:300}
+.detail__tags{display:flex;flex-wrap:wrap;gap:6px}
+.detail__nav{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:auto;padding-top:8px}
+.detail__nav button{
+  display:flex;align-items:center;gap:9px;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);
+  transition:color .35s;
+}
+.detail__nav button:hover{color:#fff}
+.detail__nav svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.4}
+
+/* =========================================================================
+   10.5 CONTACT SHEET — opened by the hero CTA
+   ========================================================================= */
+.sheet{
+  position:fixed;inset:0;z-index:75;display:grid;place-items:center;
+  padding:clamp(14px,4vw,40px);
+  opacity:0;pointer-events:none;visibility:hidden;
+  transition:opacity .5s var(--ease),visibility .5s;
+}
+.sheet.is-open{opacity:1;pointer-events:auto;visibility:visible}
+.sheet__backdrop{
+  position:absolute;inset:0;background:rgba(4,5,4,.74);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+}
+.sheet__panel{
+  position:relative;width:min(600px,100%);
+  padding:clamp(26px,4.4vw,44px) clamp(24px,4vw,46px) clamp(22px,3.4vw,36px);
+  background:#0B0C0B;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:22px;
+  box-shadow:0 50px 110px -40px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.06);
+  transform:translateY(22px) scale(.985);opacity:0;
+  transition:transform .6s var(--ease-out),opacity .5s var(--ease);
+}
+.sheet.is-open .sheet__panel{transform:none;opacity:1;transition-delay:.04s}
+.sheet__close{
+  position:absolute;top:clamp(14px,2.2vw,22px);right:clamp(14px,2.2vw,22px);
+  width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+  color:rgba(234,237,231,.6);
+  transition:color .3s,background .3s,transform .3s var(--ease-out);
+}
+.sheet__close:hover{color:#fff;background:rgba(255,255,255,.08);transform:rotate(90deg)}
+.sheet__close svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round}
+.sheet__eyebrow{margin-bottom:clamp(12px,2vw,18px)}
+.sheet__title{
+  font-family:'Noto SC','PingFang SC','Microsoft YaHei',sans-serif;font-weight:900;
+  font-size:clamp(30px,4vw,44px);line-height:1.06;letter-spacing:.01em;color:#F7F9F2;
+}
+.sheet__hint{
+  margin-top:.7em;font-size:clamp(12px,1.1vw,13.5px);line-height:1.7;
+  color:rgba(234,237,231,.55);
+}
+.sheet__list{margin-top:clamp(18px,2.8vw,26px);display:flex;flex-direction:column;gap:12px}
+.sheet__row{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;
+  position:relative;padding:clamp(17px,2.3vw,23px) clamp(18px,2.4vw,24px);
+  border-radius:16px;
+  background:rgba(255,255,255,.028);
+  border:1px solid rgba(255,255,255,.085);
+  text-align:left;
+  transition:border-color .35s var(--ease),background .35s var(--ease),transform .35s var(--ease-out);
+}
+.sheet__row:hover{border-color:rgba(238,98,245,.42);background:rgba(238,98,245,.06);transform:translateY(-1px)}
+.sheet__row:active{transform:translateY(0) scale(.995)}
+.sheet__k{font-size:clamp(12px,1.1vw,13.5px);letter-spacing:.12em;color:rgba(234,237,231,.5);flex:none}
+.sheet__v{
+  font-family:'JetBrains Mono','Noto SC',ui-monospace,monospace;
+  font-size:clamp(13px,1.35vw,16px);letter-spacing:.01em;color:#F7F9F2;
+  overflow-wrap:anywhere;
+}
+.sheet__ok{
+  position:absolute;right:clamp(18px,2.4vw,24px);top:50%;
+  transform:translateY(-50%) translateX(6px);
+  font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:#EE62F5;opacity:0;pointer-events:none;
+  transition:opacity .28s,transform .28s var(--ease-out);
+}
+.sheet__row .sheet__v{transition:opacity .24s var(--ease)}
+.sheet__row.is-copied .sheet__v{opacity:0}
+.sheet__row.is-copied{border-color:rgba(238,98,245,.6);background:rgba(238,98,245,.1)}
+.sheet__row.is-copied .sheet__ok{opacity:1;transform:translateY(-50%)}
+.sheet__foot{
+  margin-top:clamp(18px,2.8vw,26px);text-align:center;
+  font-size:clamp(11px,.98vw,12.5px);letter-spacing:.04em;color:rgba(234,237,231,.42);
+}
+
+/* =========================================================================
+   10.7 FLIP CARD — the resume card turns between 概要 and 履历
+   Vanilla port of React Bits <FlipCard /> (no motion library on this site:
+   the turn spring, the tilt sweep, the drag and the shadow are hand-rolled).
+   ========================================================================= */
+.panel--flip{padding:0;background:none;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+#ch-resume .panel{--panel-w:min(40vw,560px)}
+.chapter__inner.resume{justify-content:center}
+.flip{
+  position:relative;width:100%;
+  height:clamp(340px,50vh,470px);
+  perspective:1100px;
+  cursor:pointer;outline:none;
+  user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;
+  touch-action:pan-y;
+}
+.flip:focus-visible .flip__face{border-color:rgba(238,98,245,.55);box-shadow:0 0 0 2px rgba(238,98,245,.35)}
+.flip.is-dragging{cursor:grabbing}
+.flip__shadow{
+  position:absolute;inset:13% 8% -5%;border-radius:20px;
+  background:rgba(0,0,0,.5);filter:blur(22px);
+  pointer-events:none;will-change:transform,opacity;
+}
+.flip__stage{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
+.flip__face{
+  position:absolute;inset:0;overflow:hidden;border-radius:18px;
+  background:
+    linear-gradient(122deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,.014) 26%,rgba(255,255,255,0) 46%),
+    linear-gradient(158deg,rgba(10,12,10,.84) 0%,rgba(10,12,10,.78) 58%,rgba(10,12,10,.70) 100%);
+  border:1px solid rgba(255,255,255,.11);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 26px 0 46px -30px rgba(0,0,0,.55),0 24px 60px -30px rgba(0,0,0,.6);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  color:var(--ink);
+  transition:border-color .4s var(--ease),box-shadow .4s var(--ease);
+}
+.flip__face--back{transform:rotateY(180deg)}
+.flip__inner{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  padding:clamp(22px,3vh,34px) clamp(22px,2.5vw,34px);
+  overflow:auto;scrollbar-width:none;
+}
+.flip__inner::-webkit-scrollbar{display:none}
+.flip__inner .panel__label{flex:0 0 auto}
+/* gradient-clipped type mis-scales inside a 3D transform: flat ink on the card */
+.flip__inner .panel__title{
+  background:none;-webkit-background-clip:border-box;background-clip:border-box;
+  color:#F1F4EC;-webkit-text-fill-color:#F1F4EC;
+  font-size:clamp(36px,4.5vw,62px);letter-spacing:.005em;
+  filter:none;text-shadow:0 1px 2px rgba(0,0,0,.4);
+}
+.flip__inner .panel__lead{font-size:clamp(13px,1.08vw,15px);line-height:1.9;max-width:46ch}
+.flip .timeline li{grid-template-columns:84px 1fr;gap:clamp(14px,1.6vw,24px);padding:clamp(11px,1.9vh,19px) 0}
+.flip .timeline li + li::before{left:clamp(8px,1.2vw,16px);right:clamp(8px,1.2vw,16px)}
+.flip .t-role{font-size:clamp(14px,1.15vw,17px)}
+.flip .t-year{font-size:10px}
+.flip .t-note{font-size:12.8px;line-height:1.9;max-width:42ch}
+.flip__facts{
+  display:flex;gap:clamp(14px,2vw,28px);
+  margin-top:auto;padding-top:clamp(14px,2vh,22px);
+  border-top:1px solid rgba(255,255,255,.10);
+}
+.flip__facts div{flex:1 1 0;min-width:0}
+.flip__facts b{display:block;font-family:'JetBrains Mono','Noto SC',monospace;font-size:9px;font-weight:500;letter-spacing:.16em;color:#C86BFF}
+.flip__facts span{display:block;margin-top:6px;font-size:clamp(11px,1vw,12.5px);line-height:1.55;color:rgba(234,237,231,.78)}
+.flip__hint{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:clamp(10px,1.5vh,16px);padding-top:0;
+  font-family:'JetBrains Mono','Noto SC',monospace;
+  font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(234,237,231,.52);
+  transition:color .35s var(--ease);
+}
+.flip:hover .flip__hint{color:rgba(234,237,231,.8)}
+.flip__hint i{font-style:normal;color:#C86BFF}
+.flip__glare{
+  position:absolute;inset:0;pointer-events:none;opacity:0;
+  background:radial-gradient(circle farthest-side at var(--gx,50%) var(--gy,50%),
+    rgba(255,255,255,.20) 0%,rgba(255,255,255,.13) 16%,rgba(255,255,255,.06) 38%,
+    rgba(255,255,255,.02) 62%,rgba(255,255,255,0) 100%);
+}
+
+/* =========================================================================
+   11. CURSOR
+   ========================================================================= */
+.cursor{position:fixed;left:0;top:0;z-index:90;pointer-events:none;opacity:0}
+.cursor{
+  width:50px;height:50px;margin:-25px 0 0 -25px;
+  transition:opacity .3s;
+  will-change:transform;
+}
+.cursor__float{display:block;width:100%;height:100%;will-change:transform}
+.cursor.is-hover .cursor__float{animation:cursorFloat 4.2s ease-in-out infinite}
+@keyframes cursorFloat{
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  50%{transform:translateY(-1.5px) rotate(1.6deg)}
+}
+/* one arrow everywhere: the tip sits exactly on the hotspot (box centre), so
+   the pointer never drifts and the shape never changes on hover */
+.cur-arrow{
+  position:absolute;left:50%;top:50%;width:27px;height:27px;
+  display:block;overflow:visible;transform-origin:0 0;
+  transition:transform .34s var(--ease-out);
+  filter:
+    drop-shadow(0 0 1.4px #8BF3CE)
+    drop-shadow(0 0 7px rgba(120,255,205,.45))
+    drop-shadow(0 0 13px rgba(160,60,255,.55));
+}
+.cursor.is-hover .cur-arrow{
+  transform:scale(1.06);
+  filter:
+    drop-shadow(0 0 2px #8BF3CE)
+    drop-shadow(0 0 10px rgba(120,255,205,.6))
+    drop-shadow(0 0 18px rgba(190,80,255,.7));
+}
+.cursor.is-press .cur-arrow{transform:scale(.9);transition-duration:.12s}
+.cursor__label{
+  position:absolute;left:calc(100% + 7px);top:50%;transform:translateY(-50%);
+  padding:3px 9px;border-radius:999px;
+  background:rgba(12,6,18,.72);
+  box-shadow:inset 0 0 0 1px rgba(238,98,245,.45),0 0 16px rgba(166,43,208,.35);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:#FBDCFF;opacity:0;transition:opacity .3s;
+  white-space:nowrap;text-shadow:0 0 10px rgba(238,98,245,.75);
+}
+.cursor.is-hover .cursor__label{opacity:1}
+.cursor__label:empty{display:none}
+@media (hover:hover) and (pointer:fine){
+  html.has-cursor,html.has-cursor *{cursor:none !important}
+  html.has-cursor .cursor.is-live{opacity:1}
+}
+
+/* =========================================================================
+   12. LOADER
+   ========================================================================= */
+.loader{
+  position:fixed;inset:0;z-index:100;background:var(--bg);
+  display:grid;place-items:center;
+  transition:opacity 1s var(--ease),visibility 1s;
+}
+.loader.is-done{opacity:0;visibility:hidden;pointer-events:none}
+.loader__inner{width:min(320px,70vw);display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center}
+.loader__brand{
+  font-family:Anton;font-size:clamp(30px,4vw,44px);letter-spacing:.14em;text-transform:uppercase;
+  background:var(--silver);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.loader__bar{width:100%;height:1px;background:rgba(234,237,231,.16);overflow:hidden}
+.loader__bar i{display:block;height:100%;width:0;background:var(--ink);transition:width .3s linear}
+.loader__meta{display:flex;justify-content:space-between;width:100%;font-family:'JetBrains Mono','Noto SC',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.loader__enter{
+  margin-top:6px;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);
+  opacity:0;transition:opacity .6s var(--ease);
+}
+.loader.is-ready .loader__enter{opacity:1;animation:blink 2s infinite}
+@keyframes blink{50%{opacity:.35}}
+
+/* =========================================================================
+   13. ENTRANCE
+   ========================================================================= */
+.is-ready .hero__reveal{opacity:1;transform:none}
+.is-ready .hero__foot{opacity:1;transform:none}
+.hero__foot{opacity:0;transform:translateY(14px);transition:opacity 1s var(--ease) .62s,transform 1s var(--ease-out) .62s}
+.is-ready .film__el{transform:scale(1);transition:transform 2.4s var(--ease-out)}
+.film__el{transform:scale(1.08)}
+.chapter--contact.is-live .contact__title .ln span{transform:translateY(0)}
+.chapter--contact.is-live .contact__title .ln:nth-child(2) span{transition-delay:.08s}
+.chapter--contact.is-live .contact__title .ln:nth-child(3) span{transition-delay:.16s}
+
+/* chapter-inner element stagger: every chapter's copy rises in when the page
+   is switched in — the page itself cuts, the copy fades up right after */
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .62s var(--ease),transform .62s var(--ease-out)}
+.chapter.is-live .reveal{opacity:1;transform:none}
+.chapter.is-live .reveal[data-d="1"]{transition-delay:.05s}
+.chapter.is-live .reveal[data-d="2"]{transition-delay:.10s}
+.chapter.is-live .reveal[data-d="3"]{transition-delay:.15s}
+.chapter.is-live .reveal[data-d="4"]{transition-delay:.20s}
+.chapter.is-live .reveal[data-d="5"]{transition-delay:.25s}
+
+/* =========================================================================
+   14. RESPONSIVE
+   ========================================================================= */
+@media (max-width:1100px){
+  :root{--panel-w:clamp(320px,44vw,430px)}
+}
+
+@media (max-width:900px){
+  :root{--pad:20px;--nav-h:64px}
+  .nav__links{gap:18px;margin-right:0}
+  .gooey-nav{margin-right:0;padding:4px}
+  .gooey-links{gap:0}
+  .gooey-link{height:34px;padding:0 11px;font-size:8.5px;letter-spacing:.12em}
+  .nav__status{display:none}
+  .nav__brand{font-size:13px}
+  .nav__link{font-size:9px;letter-spacing:.2em}
+
+  .chapter__inner{padding:calc(var(--nav-h) + 8px) var(--pad) 22px}
+
+  /* hero stacks into one column at the bottom of the phone screen */
+  .hero__grid{display:flex;flex-direction:column;justify-content:flex-end;gap:14px}
+  .hero__col,.hero__foot{position:static;width:100%;max-width:none}
+  .hero__col{gap:0}
+  .hero__stat{display:none}
+  .hero__kicker{display:none}
+  .hero__title{font-size:13.4vw;line-height:.98}
+  .hero__lead{font-size:12px;line-height:1.75;margin-top:10px;max-width:none}
+  .hero__cta{margin-top:14px;font-size:11.5px}
+  .hero__foot{gap:10px}
+  .scrollcue{display:none}
+
+  /* panels become bottom sheets sitting on the character */
+  .plate{background:#171B17}
+  .plate__img{position:absolute;inset:0 0 auto 0;height:46vh;transform:none}
+  .plate--resume .plate__img{object-position:34% 34%}
+  .plate--work .plate__img{object-position:86% 32%}
+  .plate--resume .plate__scrim,.plate--work .plate__scrim{
+    background:linear-gradient(180deg,rgba(7,8,7,.34) 0%,rgba(7,8,7,.10) 10%,rgba(7,8,7,0) 18%);
+  }
+  .chapter__inner.resume,.chapter__inner.work{
+    padding:0;justify-content:flex-end;align-items:stretch;
+  }
+  .chapter__inner.resume .panel,.chapter__inner.work .panel{
+    width:100%;max-width:100%;gap:9px;
+    padding:20px var(--pad) calc(16px + env(safe-area-inset-bottom));
+    background:linear-gradient(180deg,rgba(11,13,11,.72) 0%,rgba(9,10,9,.82) 22%,rgba(9,10,9,.88) 100%);
+    border:1px solid rgba(255,255,255,.10);
+    border-bottom:0;
+    border-radius:20px 20px 0 0;
+    box-shadow:0 -26px 60px rgba(0,0,0,.45);
+    -webkit-backdrop-filter:blur(16px) saturate(1.2);
+    backdrop-filter:blur(16px) saturate(1.2);
+  }
+  .panel__title{font-size:clamp(30px,8.4vw,44px)}
+  .panel__lead{font-size:12px;max-width:38ch}
+  .timeline li{grid-template-columns:58px 1fr;padding:11px 0}
+  .t-note{display:block;font-size:11px;line-height:1.7;margin-top:.35em}
+  /* one slide at a time, stacked: the sheet then hugs the active slide height */
+  .slider__track{display:block;position:relative;transform:none !important;transition:none}
+  .slide{position:absolute;left:0;right:0;top:0;opacity:0;pointer-events:none;transition:opacity .4s var(--ease)}
+  .slide.is-on{position:relative;opacity:1;pointer-events:auto}
+  .slider__window{min-height:0;overflow:visible}
+  .stats{gap:18px}
+  .stat__n{font-size:18px}
+  .stat__l{font-size:8px}
+
+  .dc{height:300px}
+  .dc__arrow{width:36px;height:36px;margin-top:-18px}
+  .dc__arrow--prev{left:4px}
+  .dc__arrow--next{right:4px}
+  .carousel__hint{display:none}
+  .work__caption{display:none}
+
+  .chapter__inner.resume .panel--flip{padding:0 var(--pad) calc(20px + env(safe-area-inset-bottom));background:none;border-top:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+  .flip{height:clamp(370px,54vh,480px)}
+  .hero__lead{color:rgba(234,237,231,.92)}
+  .contact .hero__stat--b h3{color:#F7F9F2}
+  .contact .hero__stat--b p{color:rgba(234,237,231,.66)}
+  .contact__links{color:rgba(234,237,231,.74)}
+  .contact__mail{color:#EAEDE7;border-color:rgba(234,237,231,.3)}
+
+  .contact__scrim{background:linear-gradient(180deg,rgba(5,6,5,0) 0%,rgba(5,6,5,.16) 34%,rgba(5,6,5,.52) 62%,rgba(5,6,5,.72) 100%)}
+  /* the hero hides its stat blocks on phones; the contact page needs the
+     links, so that one block drops back into the flow under the email */
+  .contact .hero__stat--b{
+    display:block;position:static;width:100%;text-align:left;
+    margin-top:clamp(12px,2vh,18px);
+  }
+  .contact .hero__stat--b h3{font-size:15px;margin-bottom:8px}
+  .contact .hero__stat--b p{font-size:12px;line-height:1.7}
+  .contact__links{flex-direction:row;flex-wrap:wrap;gap:16px;align-items:center;justify-content:flex-start}
+  .contact__foot{display:none}
+  .scrim-hero{
+    background:
+      linear-gradient(0deg,rgba(7,8,7,.82) 0%,rgba(7,8,7,.64) 26%,rgba(7,8,7,.34) 38%,rgba(7,8,7,.08) 48%,rgba(7,8,7,0) 58%);
+  }
+
+  /* detail modal stacks and scrolls */
+  .detail{padding:0;align-items:end}
+  .detail__panel{grid-template-columns:1fr;max-height:92vh;width:100%;border-radius:0;transform:translateY(40px)}
+  .detail__art{min-height:34vh}
+  .detail__body{max-height:58vh}
+  .detail__num{font-size:34vw}
+
+  .rail{display:none}
+}
+
+@media (max-width:560px){
+  .nav__links{gap:13px}
+  .nav__link{font-size:8.5px;letter-spacing:.16em}
+  .hero__right{gap:10px}
+  .btn{padding:1.05em 1.5em;font-size:9.5px}
+  .carousel__foot{gap:10px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
+  .film__el{transform:none}
+}
+</style>
+</head>
+
+<body class="is-loading">
+
+<!-- ========== LOADER ========== -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader__inner">
+    <div class="loader__brand">三七</div>
+    <div class="loader__bar"><i id="loadBar"></i></div>
+    <div class="loader__meta"><span>正在载入影片</span><span id="loadPct">0%</span></div>
+    <div class="loader__enter">滚动翻页</div>
+  </div>
+</div>
+
+<!-- ========== FIXED STAGE: film + character plates ========== -->
+<div class="stage" aria-hidden="true">
+  <div class="film" id="film">
+    <video class="film__el" id="video" muted playsinline webkit-playsinline preload="auto"
+           disablepictureinpicture disableremoteplayback poster="assets/poster.jpg"></video>
+    <div class="gaze" id="gaze">
+      <canvas class="gaze__canvas" id="gazeCanvas" width="576" height="720" role="presentation"></canvas>
+    </div>
+  </div>
+
+  <!-- opaque sage bed: keeps the film from showing through the plates while
+       resume and work dissolve into each other -->
+  <div class="plate-bed" id="plateBed"></div>
+
+  <figure class="plate plate--resume" id="plateResume">
+    <img class="plate__img" src="assets/resume.webp" alt="" width="1800" height="1012" decoding="async" />
+    <div class="plate__scrim"></div>
+  </figure>
+
+  <figure class="plate plate--work" id="plateWork">
+    <img class="plate__img" src="assets/work.webp" alt="" width="2200" height="1238" decoding="async" />
+    <div class="plate__scrim"></div>
+  </figure>
+
+  <div class="scrim-hero" id="scrimHero"></div>
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ========== NAV ========== -->
+<header class="nav" id="nav">
+  <button class="nav__mark" id="toTop" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+  </button>
+  <span class="nav__brand">三七</span>
+  <div class="gooey-nav" id="gooeyNav">
+    <div class="gooey-stage">
+      <div class="gooey-hover" aria-hidden="true"></div>
+      <div class="gooey-blob" aria-hidden="true"></div>
+      <ul class="gooey-links">
+        <li class="gooey-item" data-gooey-index="0"><button class="nav__link gooey-link" data-go="0" data-ch="hero">关于</button></li>
+        <li class="gooey-item" data-gooey-index="1"><button class="nav__link gooey-link" data-go="0.235" data-ch="resume">简历</button></li>
+        <li class="gooey-item" data-gooey-index="2"><button class="nav__link gooey-link" data-go="0.62" data-ch="work">作品</button></li>
+        <li class="gooey-item" data-gooey-index="3"><button class="nav__link gooey-link" data-go="0.955" data-ch="contact">联系</button></li>
+      </ul>
+      <ul class="gooey-links gooey-links--ink" aria-hidden="true">
+        <li class="gooey-item"><span class="gooey-link">关于</span></li>
+        <li class="gooey-item"><span class="gooey-link">简历</span></li>
+        <li class="gooey-item"><span class="gooey-link">作品</span></li>
+        <li class="gooey-item"><span class="gooey-link">联系</span></li>
+      </ul>
+    </div>
+  </div>
+  <span class="nav__status"><i class="nav__dot"></i>档期开放</span>
+</header>
+
+<!-- ========== SIDE RAIL ========== -->
+<div class="rail" aria-hidden="true">
+  <span class="rail__num" id="railNum">01</span>
+  <div class="rail__track">
+    <div class="rail__fill" id="railFill"></div>
+    <div class="rail__ticks">
+      <i class="rail__tick is-on" data-t="0" style="top:0%"></i>
+      <i class="rail__tick" data-t="1" style="top:22%"></i>
+      <i class="rail__tick" data-t="2" style="top:58%"></i>
+      <i class="rail__tick" data-t="3" style="top:100%"></i>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CHAPTER 01 — HERO ========== -->
+<section class="chapter chapter--hero is-live" id="ch-hero" data-chapter="hero">
+  <div class="chapter__inner hero__inner">
+    <div class="hero__grid">
+
+      <div class="hero__col">
+        <p class="hero__kicker mono"><i aria-hidden="true"></i>AI 独立开发者 · 上海</p>
+        <h1 class="display hero__title" id="heroTitle">
+          <span class="hero__reveal">你好，<br />我是<br />三七</span>
+        </h1>
+        <p class="hero__lead"><span>一个人，把想法做成能跑起来的产品。</span><span>现在做 AI 原生的工具、智能体，和一些玩具。</span></p>
+        <button type="button" class="hero__cta" id="heroContact" data-cursor="打开">
+          <canvas class="spec-btn__light" aria-hidden="true"></canvas>
+          <span class="spec-btn__label">联系我</span>
+          <span class="hero__chip" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18 18 6M8 6h10v10"/></svg>
+          </span>
+        </button>
+      </div>
+
+      <div class="hero__stat hero__stat--a reveal">
+        <h3>30<sup>+</sup> 上线产品</h3>
+        <p>订阅制工具、开源项目，<br />和几个纯玩具。</p>
+      </div>
+
+      <div class="hero__stat hero__stat--b reveal">
+        <h3>100% 独立开发</h3>
+        <p>需求、代码、设计、客服——<br />一个人就是整条流水线。</p>
+      </div>
+
+      <div class="hero__foot">
+        <div class="hud mono">
+          <span id="tcNow">00:00</span>
+          <span class="hud__bar"><i id="hudFill"></i></span>
+          <span id="tcTotal">00:11</span>
+        </div>
+        <span class="scrollcue">滚动翻页 <span aria-hidden="true"></span></span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== CHAPTER 02 — RESUME ========== -->
+<section class="chapter chapter--resume" id="ch-resume" data-chapter="resume">
+  <div class="chapter__inner resume">
+    <div class="panel panel--flip">
+
+      <div class="flip reveal" data-d="1" id="resumeFlip" role="button" tabindex="0"
+           aria-pressed="false" aria-label="翻开查看完整履历">
+        <span class="flip__shadow" aria-hidden="true"></span>
+
+        <div class="flip__stage" id="resumeStage">
+
+          <!-- FACE 1 — 简短概要 -->
+          <div class="flip__face flip__face--front">
+            <div class="flip__inner">
+              <div class="panel__label">
+                <span class="eyebrow">01 — 简历</span>
+                <span class="mono">概要 / 2025</span>
+              </div>
+
+              <h2 class="panel__title">简短<br />版本</h2>
+
+              <p class="panel__lead">
+                西安电子科技大学毕业，在 Moment AI 的 Pilot 部门实习，做过 AI 智能驾驶；现在在航天院所，做信息化。
+              </p>
+
+              <div class="flip__facts">
+                <div><b>教育</b><span>西安电子科技大学</span></div>
+                <div><b>实习</b><span>Moment AI · Pilot</span></div>
+                <div><b>在职</b><span>航天院所 · 信息化</span></div>
+              </div>
+
+              <span class="flip__hint">点击或左右拖动 <i aria-hidden="true">→</i></span>
+            </div>
+            <span class="flip__glare" aria-hidden="true"></span>
+          </div>
+
+          <!-- FACE 2 — 具体履历 -->
+          <div class="flip__face flip__face--back">
+            <div class="flip__inner">
+              <div class="panel__label">
+                <span class="eyebrow">02 — 履历</span>
+                <span class="mono">2025 / 2019</span>
+              </div>
+
+              <ol class="timeline timeline--plain">
+                <li>
+                  <span class="t-year">至今</span>
+                  <div>
+                    <h3 class="t-role">航天院所</h3>
+                    <p class="t-org">信息化</p>
+                    <p class="t-note">从事信息化相关的工作。</p>
+                  </div>
+                </li>
+                <li>
+                  <span class="t-year">实习</span>
+                  <div>
+                    <h3 class="t-role">Moment AI</h3>
+                    <p class="t-org">Pilot 部门</p>
+                    <p class="t-note">做 AI 智能驾驶相关的工作。</p>
+                  </div>
+                </li>
+                <li>
+                  <span class="t-year">教育</span>
+                  <div>
+                    <h3 class="t-role">西安电子科技大学</h3>
+                    <p class="t-org">西安</p>
+                    <p class="t-note">从这里毕业。</p>
+                  </div>
+                </li>
+              </ol>
+
+              <span class="flip__hint"><i aria-hidden="true">←</i> 返回概要</span>
+            </div>
+            <span class="flip__glare" aria-hidden="true"></span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CHAPTER 03 — WORK ========== -->
+<section class="chapter chapter--work" id="ch-work" data-chapter="work">
+  <div class="chapter__inner work">
+    <div class="panel">
+
+      <div class="panel__label reveal">
+        <span class="eyebrow">02 — 精选作品</span>
+        <span class="mono">2019 / 2025</span>
+      </div>
+
+      <h2 class="panel__title reveal" data-d="1">做过的<br />东西</h2>
+
+      <p class="panel__lead reveal" data-d="2">
+        五个项目，基本能说明我的工作方式——古怪的需求、强烈的剪影，还有无数次深夜渲染。
+      </p>
+
+      <div class="dc reveal" data-d="3" id="dc" tabindex="0" role="group" aria-label="作品集">
+        <div class="dc__stage" id="dcStage"></div>
+        <button class="dc__arrow dc__arrow--prev" id="dcPrev" type="button" aria-label="上一件作品">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="dc__arrow dc__arrow--next" id="dcNext" type="button" aria-label="下一件作品">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+
+      <div class="carousel__foot reveal" data-d="4">
+        <span class="carousel__count" id="carouselCount">01 / 05</span>
+        <span class="dc__dots" id="dcDots"></span>
+        <span class="carousel__spacer"></span>
+        <span class="carousel__hint" id="carouselHint">拖动浏览 · 点击展开</span>
+      </div>
+
+    </div>
+
+    <div class="work__caption">
+      <i></i>
+      <span>图 03 — 工作现场</span>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CHAPTER 04 — CONTACT ========== -->
+<section class="chapter chapter--contact" id="ch-contact" data-chapter="contact">
+  <div class="contact__scrim" aria-hidden="true"></div>
+  <div class="chapter__inner contact hero__inner">
+    <div class="hero__grid">
+
+      <div class="hero__col">
+        <p class="hero__kicker mono"><i aria-hidden="true"></i>03 — 联系 · 演示结束</p>
+        <h2 class="display hero__title">
+          <span class="hero__reveal">一起做点<br />有人用的<br />东西</span>
+        </h2>
+        <p class="hero__lead">
+          <span>有产品想法，或者只是想聊聊模型怎么落地，</span>
+          <span>都可以写信给我。</span>
+        </p>
+        <button type="button" class="contact__mail" data-copy="longyihan751@gmail.com">
+          <svg class="mail-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 6.5 L12 12.5 L20.5 6.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>longyihan751@gmail.com</span>
+          <span class="mail-ok">已复制</span>
+        </button>
+      </div>
+
+      <div class="hero__stat hero__stat--a reveal">
+        <h3>当天回信</h3>
+        <p>工作日的邮件当天回，<br />聊不成也当交个朋友。</p>
+      </div>
+
+      <div class="hero__stat hero__stat--b reveal">
+        <h3>找到我</h3>
+        <p class="contact__links">
+          <a href="https://github.com/SANQI-AICreator" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="#" onclick="return false">X</a>
+          <a href="#" onclick="return false">即刻</a>
+          <a href="#" onclick="return false">Blog</a>
+        </p>
+      </div>
+
+      <div class="contact__foot">
+        <span>© 2025 三七 — 上海 · 滚动驱动</span>
+        <span>北纬 31.2304° / 东经 121.4737°</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONTACT SHEET (hero CTA) ========== -->
+<div class="sheet" id="contactSheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" aria-hidden="true">
+  <div class="sheet__backdrop" data-sheet-close></div>
+  <div class="sheet__panel">
+    <button class="sheet__close" id="sheetClose" aria-label="关闭">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <p class="eyebrow sheet__eyebrow"><i></i>CONTACT</p>
+    <h2 class="sheet__title" id="sheetTitle">联系我</h2>
+    <p class="sheet__hint">点击任意一行即可复制</p>
+    <ul class="sheet__list">
+      <li>
+        <button class="sheet__row" type="button" data-copy="longyihan751@gmail.com">
+          <span class="sheet__k">邮箱</span>
+          <span class="sheet__v">longyihan751@gmail.com</span>
+          <span class="sheet__ok">已复制</span>
+        </button>
+      </li>
+      <li>
+        <button class="sheet__row" type="button" data-copy="RL_lover">
+          <span class="sheet__k">微信</span>
+          <span class="sheet__v">RL_lover</span>
+          <span class="sheet__ok">已复制</span>
+        </button>
+      </li>
+    </ul>
+    <p class="sheet__foot">通常 24 小时内回复 · 欢迎带着想法来聊</p>
+  </div>
+</div>
+
+<!-- ========== PROJECT DETAIL ========== -->
+<div class="detail" id="detail" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+  <div class="detail__backdrop" data-close></div>
+  <div class="detail__panel">
+    <button class="detail__close" id="detailClose" aria-label="关闭详情">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="detail__art" id="detailArt">
+      <span class="detail__num" id="detailNum">01</span>
+    </div>
+    <div class="detail__body">
+      <div class="detail__kind" id="detailKind">品牌影片 — 2024</div>
+      <h2 class="detail__title" id="detailTitle">轨道</h2>
+      <dl class="detail__meta">
+        <div><dt>客户</dt><dd id="detailClient">轨道航天</dd></div>
+        <div><dt>角色</dt><dd id="detailRole">导演 · 三维</dd></div>
+        <div><dt>年份</dt><dd id="detailYear">2024</dd></div>
+        <div><dt>工具</dt><dd id="detailStack">C4D · Redshift</dd></div>
+      </dl>
+      <p class="detail__text" id="detailText"></p>
+      <div class="detail__tags" id="detailTags"></div>
+      <div class="detail__nav">
+        <button id="detailPrev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg> 上一个</button>
+        <button id="detailNext">下一个 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CURSOR ========== -->
+<!-- one neon arrow everywhere: mint outer rim, pale-pink inner line and a
+     purple body that darkens to near-black toward the middle. inline svg so
+     the glow stays a css drop-shadow and stays crisp at any dpr -->
+<div class="cursor" id="cursor" aria-hidden="true">
+  <span class="cursor__float">
+    <svg class="cur-arrow" viewBox="0 0 24 24" role="presentation">
+      <defs>
+        <radialGradient id="curArrowFill" cx=".42" cy=".32" r=".82">
+          <stop offset="0" stop-color="#05020A"/>
+          <stop offset=".45" stop-color="#330A55"/>
+          <stop offset=".78" stop-color="#7A22B4"/>
+          <stop offset="1" stop-color="#A63BE2"/>
+        </radialGradient>
+      </defs>
+      <path d="M1.1 1.1 L1.1 19.6 L5.9 15.3 L8.9 22.4 L12.4 20.9 L9.4 13.9 L16.1 13.7 Z"
+            fill="none" stroke="#8BF3CE" stroke-width="4.0" stroke-linejoin="round"/>
+      <path d="M1.1 1.1 L1.1 19.6 L5.9 15.3 L8.9 22.4 L12.4 20.9 L9.4 13.9 L16.1 13.7 Z"
+            fill="none" stroke="#FFD3F2" stroke-width="3.0" stroke-linejoin="round"/>
+      <path d="M1.1 1.1 L1.1 19.6 L5.9 15.3 L8.9 22.4 L12.4 20.9 L9.4 13.9 L16.1 13.7 Z"
+            fill="url(#curArrowFill)" stroke="#C05BFF" stroke-width="1.1" stroke-linejoin="round"/>
+    </svg>
+  </span>
+  <span class="cursor__label" id="cursorLabel"></span>
+</div>
+
+<!-- scroll length: 1 second of film = 100vh -->
+<div class="scroll-space" id="scrollSpace" aria-hidden="true"></div>
+
+<noscript>
+  <div style="position:fixed;inset:0;z-index:200;background:#070807;color:#EAEDE7;display:grid;place-items:center;text-align:center;padding:30px;font-family:sans-serif">
+    这个作品集用滚动播放一部影片，需要开启 JavaScript 才能观看。
+  </div>
+</noscript>
+
+<script>
+/* =========================================================================
+   三七 — scroll-told portfolio
+   One scroll progress value drives: the film's currentTime, the character
+   plates, and every chapter's fixed copy layer.
+   ========================================================================= */
+(function () {
+  'use strict';
+
+  var $  = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
+  var smoothstep = function (a, b, x) { var t = clamp((x - a) / (b - a || 1e-6), 0, 1); return t * t * (3 - 2 * t); };
+  var lerp = function (a, b, t) { return a + (b - a) * t; };
+  var easeOut = function (t) { return 1 - Math.pow(1 - t, 3); };
+
+  var isTouch  = matchMedia('(hover: none), (pointer: coarse)').matches;
+  var reduced  = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var isSmall  = function () { return window.innerWidth <= 900; };
+
+  /* ---------------------------------------------------------------------
+     Progress windows — every chapter owns a slice of the scroll, and every
+     handover is a CUT, not a dissolve:
+       hero   → resume at 0.100
+       resume → work   at 0.381
+       work   → contact at 0.888
+     Each pair of windows shares a single progress point (≈8 px of scroll), so
+     no frame ever shows two pages, and the film never leaks between them.
+     The page itself swaps instantly; its copy then fades up (.reveal).
+     --------------------------------------------------------------------- */
+  /* handover windows: each page fades over ~0.02 of progress instead of the
+     old ~0.001 cut. The windows are chained (one starts as the previous one
+     ends) so a chapter is never below 1 while another is already climbing. */
+  var RANGES = {
+    hero:    { in: [-1, -1],           out: [0.088, 0.108] },
+    resume:  { in: [0.098, 0.118],     out: [0.358, 0.378] },
+    work:    { in: [0.368, 0.388],     out: [0.858, 0.878] },
+    contact: { in: [0.868, 0.888],     out: [2, 3] }
+  };
+  var CHAPTERS = ['hero', 'resume', 'work', 'contact'];
+  var NAV_AT = { hero: 0, resume: 0.235, work: 0.62, contact: 0.955 };
+
+  var state = {
+    page: 0,          // which of the four pages is current (wheel turns pages)
+    target: 0,        // the progress that page parks on
+    layout: 0,        // smoothed progress used by the page content
+    film: 0,          // smoothed progress used by the video (snappier)
+    duration: 11.07,  // fallback until metadata lands
+    ready: false,
+    heroLive: true,
+    resumeIndex: 0,
+    workIndex: 0,
+    workLock: 0,      // timestamp of the last non-drag carousel change
+    lastScroll: 0,    // timestamp of the last page turn
+    workHover: false,
+    modalOpen: false
+  };
+
+  /* page switch: a crossfade with a slight rise. The outgoing copy fades while
+     it drifts 16 px up, the incoming one settles down from 24 px with a 6 px
+     blur that clears as it lands. Both use the same easing as --ease-out so the
+     motion matches the rest of the site, and the whole thing is time-driven so
+     it lasts the same 620 ms whether the turn came from a wheel flick, a key, a
+     nav click or a swipe. */
+  var SWAP_MS = 620;
+  var swap = { active: false, from: 0, to: 0, at: 0, fromO: 1, toO: 0, resO: 0, workO: 0 };
+  window.__swap = swap;   /* debug hook, same spirit as window.__deck */
+
+  // cubic-bezier(.16,1,.3,1) — the exact curve behind var(--ease-out)
+  function easeOut(t) {
+    if (t <= 0) return 0;
+    if (t >= 1) return 1;
+    var x1 = 0.16, y1 = 1, x2 = 0.3, y2 = 1;
+    var cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx;
+    var cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+    var u = t, i, x, d;
+    for (i = 0; i < 6; i++) {
+      x = ((ax * u + bx) * u + cx) * u;
+      d = (3 * ax * u + 2 * bx) * u + cx;
+      if (Math.abs(d) < 1e-6) break;
+      u -= (x - t) / d;
+    }
+    return ((ay * u + by) * u + cy) * u;
+  }
+
+  var video      = $('#video');
+  var gazeEl     = $('#gaze');
+  var gazeCanvas = $('#gazeCanvas');
+  var stage      = $('.stage');
+  var film       = $('#film');
+  var plateRes   = $('#plateResume');
+  var plateWork  = $('#plateWork');
+  var plateBed   = $('#plateBed');
+  var scrimHero  = $('#scrimHero');
+  var chEls      = {};
+  CHAPTERS.forEach(function (c) { chEls[c] = $('#ch-' + c); });
+  var railFill   = $('#railFill');
+  var railNum    = $('#railNum');
+  var railTicks  = $$('.rail__tick');
+  var tcNow      = $('#tcNow');
+  var tcTotal    = $('#tcTotal');
+  var hudFill    = $('#hudFill');
+  var navLinks   = $$('.nav__link');
+  var scrollSpace= $('#scrollSpace');
+
+  /* ---------------------------------------------------------------------
+     1. FILM SOURCE + LOADER
+     --------------------------------------------------------------------- */
+  if (isSmall() && window.innerWidth < 780) video.src = 'assets/hero-720.mp4';
+  else video.src = 'assets/hero-1080.mp4';
+
+  var loader   = $('#loader');
+  var loadBar  = $('#loadBar');
+  var loadPct  = $('#loadPct');
+  var loadDone = false;
+
+  function bufferedRatio() {
+    try {
+      if (!video.buffered || !video.buffered.length) return 0;
+      return clamp(video.buffered.end(video.buffered.length - 1) / (video.duration || state.duration), 0, 1);
+    } catch (e) { return 0; }
+  }
+
+  function setLoadProgress(p) {
+    var v = Math.round(p * 100);
+    loadBar.style.width = v + '%';
+    loadPct.textContent = v + '%';
+  }
+
+  function finishLoading() {
+    if (loadDone) return;
+    loadDone = true;
+    setLoadProgress(1);
+    state.ready = true;
+    document.body.classList.remove('is-loading');
+    setTimeout(function () {
+      loader.classList.add('is-done');
+      document.body.classList.add('is-ready');
+      heroTitleFit();
+      loadGazeFrames();
+    }, 260);
+  }
+
+  video.addEventListener('loadedmetadata', function () {
+    state.duration = video.duration || state.duration;
+    tcTotal.textContent = fmt(state.duration);
+    sizePage();
+    seekTo(0);
+  });
+
+  video.addEventListener('progress', function () { if (!loadDone) setLoadProgress(bufferedRatio()); });
+  video.addEventListener('canplay', function () {
+    if (bufferedRatio() > 0.25 || video.readyState >= 3) finishLoading();
+  });
+  video.addEventListener('error', function () { finishLoading(); });
+
+  var loadWatch = setInterval(function () {
+    if (loadDone) { clearInterval(loadWatch); return; }
+    var r = bufferedRatio();
+    if (r > 0.02) setLoadProgress(r);
+    if (video.readyState >= 3 && r > 0.2) finishLoading();
+  }, 220);
+
+  // hard fallback: never trap the visitor behind the loader
+  setTimeout(function () {
+    if (!loadDone) { setLoadProgress(bufferedRatio() || 0.4); finishLoading(); }
+  }, 9000);
+
+  // iOS: unlock the decoder on the first gesture, then stay paused.
+  function unlock() {
+    var p = video.play();
+    if (p && p.then) p.then(function () { video.pause(); seekTo(state.film * state.duration, true); }).catch(function () {});
+    window.removeEventListener('touchstart', unlock);
+    window.removeEventListener('click', unlock);
+  }
+  window.addEventListener('touchstart', unlock, { passive: true });
+  window.addEventListener('click', unlock);
+
+  /* ---------------------------------------------------------------------
+     2. LAYOUT / PAGE MODEL
+
+     There is no native scroll. The site is four full-screen pages and the
+     wheel (or a swipe, or the arrow keys) turns them; the turning is a tween
+     of a virtual progress value, so the film still scrubs and every chapter
+     still cuts at exactly the same progress points as before.
+
+     PAGES = where each page parks on that 0–1 progress axis.
+     --------------------------------------------------------------------- */
+  var vh = window.innerHeight;
+
+  var PAGES = [0, 0.235, 0.62, 0.955];
+  var pageLockAt = 0;
+  var wheelAcc = 0;
+
+  function sizePage() {
+    vh = window.innerHeight;
+    measureAll();
+    updateTarget();
+  }
+
+  function maxScroll() { return 1; }
+
+  function updateTarget() { state.target = PAGES[state.page] || 0; }
+
+  function pageOf(p) {
+    var best = 0, dist = 9;
+    for (var i = 0; i < PAGES.length; i++) {
+      var d = Math.abs(PAGES[i] - p);
+      if (d < dist) { dist = d; best = i; }
+    }
+    return best;
+  }
+
+  /* turn to page i. The lock keeps one wheel flick (or one key press, or one
+     quick swipe) from skipping two pages. */
+  function beginSwap(from, to) {
+    if (from === to) return;
+    // a second turn while one is running: keep the page that is already on its
+    // way out and restart the clock so the motion never snaps
+    swap.from = swap.active ? swap.to : from;
+    swap.to = to;
+    swap.at = performance.now();
+    swap.active = true;
+    // start each crossfade from the opacity that is actually on screen, so an
+    // interrupted turn neither pops to full nor to zero
+    var fo = chEls[CHAPTERS[swap.from]], ti = chEls[CHAPTERS[swap.to]];
+    swap.fromO = fo ? (parseFloat(getComputedStyle(fo).opacity) || 0) : 1;
+    swap.toO   = ti ? (parseFloat(getComputedStyle(ti).opacity) || 0) : 0;
+    var pr = plateRes ? parseFloat(getComputedStyle(plateRes).opacity) || 0 : 0;
+    var pw = plateWork ? parseFloat(getComputedStyle(plateWork).opacity) || 0 : 0;
+    swap.resO = pr; swap.workO = pw;
+  }
+
+  function applySwap(now, p) {
+    if (!swap.active) return;
+    var t = (now - swap.at) / SWAP_MS;
+
+    if (t >= 1) {
+      swap.active = false;
+      CHAPTERS.forEach(function (n) {
+        var el = chEls[n];
+        el.style.transform = '';
+        el.style.filter = '';
+        el.style.visibility = '';
+        el._o = undefined;
+      });
+      [plateRes, plateWork].forEach(function (el) {
+        el.style.transform = '';
+        el.style.opacity = '';
+      });
+      plateBed._c = undefined;
+      // hand the opacity back in this very frame: clearing the inline value
+      // would drop every chapter to its CSS default (opacity:0) until the next
+      // rAF writes it back, which reads as a one-frame flash
+      renderChapters(p);
+      renderPlates(p);
+      return;
+    }
+
+    var e = easeOut(t);
+    var calm = reduced;                // reduced motion: crossfade only
+    var outEl = chEls[CHAPTERS[swap.from]];
+    var inEl  = chEls[CHAPTERS[swap.to]];
+
+    var outE = Math.pow(1 - e, 1.8) * (swap.fromO === undefined ? 1 : swap.fromO);
+    if (outEl && outEl !== inEl) {
+      outEl.style.visibility = 'visible';
+      outEl.style.opacity = outE.toFixed(3);
+      outEl.style.transform = calm ? '' : 'translate3d(0,' + (-16 * e).toFixed(2) + 'px,0)';
+    }
+    if (inEl) {
+      inEl.style.visibility = 'visible';
+      inEl.style.opacity = (swap.toO ? swap.toO + (1 - swap.toO) * e : e).toFixed(3);
+      inEl.style.transform = calm ? '' : 'translate3d(0,' + (24 * (1 - e)).toFixed(2) + 'px,0)';
+      if (e > 0.02) inEl.classList.add('is-live');
+    }
+
+    // character plates cross over with the copy, but they are the backdrop:
+    // only a slight lift, never a blur
+    var pOut = swap.from === 1 ? plateRes : (swap.from === 2 ? plateWork : null);
+    var pIn  = swap.to === 1 ? plateRes : (swap.to === 2 ? plateWork : null);
+    // the plates swap in ~150 ms, not over the whole 620 ms: they are
+    // full-screen photographs, so a long dissolve shows two characters at once
+    var plateIn  = calm ? e : Math.min(1, e * 3);
+    var plateOut = calm ? 1 - e : Math.pow(1 - e, 3);
+    if (pOut && pOut !== pIn) {
+      pOut.style.opacity = plateOut.toFixed(3);
+      pOut.style.transform = calm ? '' : 'translate3d(0,' + (-8 * e).toFixed(2) + 'px,0)';
+    }
+    if (pIn) {
+      pIn.style.opacity = plateIn.toFixed(3);
+      pIn.style.transform = calm ? '' : 'translate3d(0,' + (10 * (1 - e)).toFixed(2) + 'px,0)';
+    }
+
+    // only the resume <-> work handover dissolves two photographic plates into
+    // each other; there the film sits underneath and would read as a third
+    // body, so hold the sage bed over it. Every other handover has at most one
+    // plate on screen and must NOT be covered, or the film flashes flat sage.
+    var twoPlates = (swap.from === 1 && swap.to === 2) || (swap.from === 2 && swap.to === 1);
+    if (twoPlates) {
+      plateBed.style.opacity = (0.94 * Math.min(1, Math.min(e, 1 - e) * 10)).toFixed(3);
+      plateBed._c = undefined;
+    }
+  }
+
+  function goPage(i, force) {
+    i = clamp(i, 0, PAGES.length - 1);
+    var now = performance.now();
+    if (!force && now - pageLockAt < 640) return;
+    pageLockAt = now;
+    wheelAcc = 0;
+    if (i === state.page) { state.target = PAGES[i]; return; }
+    var prevPage = state.page;
+    state.page = i;
+    state.target = PAGES[i];
+    state.lastScroll = now;
+    beginSwap(prevPage, i);
+    if (gooeyNav) gooeyNav.setActive(i);
+  }
+
+  function stepPage(dir) { goPage(state.page + dir); }
+
+  /* ---------------------------------------------------------------------
+     3. SEEK QUEUES — one seek in flight per element, latest target wins
+     --------------------------------------------------------------------- */
+  function makeSeeker(el) {
+    var pending = null, busy = false, startedAt = 0;
+
+    function flush() {
+      if (pending === null || el.readyState < 1) return;
+      var t = pending;
+      pending = null;
+      if (Math.abs(el.currentTime - t) < 0.018) return;
+      busy = true;
+      startedAt = performance.now();
+      try { el.currentTime = t; } catch (e) { busy = false; }
+      if (!el.seeking) busy = false;
+    }
+
+    el.addEventListener('seeked', function () { busy = false; flush(); });
+    el.addEventListener('loadeddata', flush);
+
+    return {
+      seek: function (t, force) {
+        if (!isFinite(t)) return;
+        var d = el.duration || state.duration;
+        t = clamp(t, 0, Math.max(0, d - 0.03));
+        if (!force && Math.abs(el.currentTime - t) < 0.02) return;
+        pending = t;
+        flush();
+      },
+      tick: function (now) { if (busy && now - startedAt > 260) busy = false; }
+    };
+  }
+
+  var filmSeek = makeSeeker(video);
+
+  function seekTo(t, force) { filmSeek.seek(t, force); }
+
+  /* ---------------------------------------------------------------------
+     4. MAIN LOOP
+     --------------------------------------------------------------------- */
+  var last = performance.now();
+  var lastTimecode = -1;
+
+  function frame(now) {
+    var dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+
+    filmSeek.tick(now);
+
+    // two-stage smoothing: layout eases, film eases faster
+    var kL = 1 - Math.exp(-dt / 0.115);
+    var kF = 1 - Math.exp(-dt / 0.055);
+    state.layout = lerp(state.layout, state.target, kL);
+    state.film   = lerp(state.film, state.target, kF);
+    if (Math.abs(state.layout - state.target) < 0.00015) state.layout = state.target;
+    if (Math.abs(state.film - state.target) < 0.0001) state.film = state.target;
+
+    var p = state.layout;
+    var pf = state.film;
+
+    renderChapters(p);
+    renderPlates(p);
+    applySwap(now, p);
+    renderHero(p, dt);
+    renderRail(p);
+    renderResume(p);
+    renderWork(p, dt);
+    renderHud(pf);
+
+    if (state.ready) {
+      // ---- gaze portrait owns the first screen; the film runs the story
+      var onGaze = GAZE.ready && !reduced && !isTouch && p < 0.0035;
+      if (onGaze !== gazeOn) {
+        gazeOn = onGaze;
+        stage.classList.toggle('is-gaze', gazeOn);
+      }
+      stepGaze(now, dt, gazeOn, p);
+      seekTo(pf * state.duration);
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------------------------------------------------------------------
+     5. CHAPTER / PLATE RENDERING
+     --------------------------------------------------------------------- */
+  function chapterOpacity(name, p) {
+    var r = RANGES[name];
+    var inn = r.in[0] < 0 ? 1 : smoothstep(r.in[0], r.in[1], p);
+    var out = 1 - smoothstep(r.out[0], r.out[1], p);
+    return clamp(inn * out, 0, 1);
+  }
+
+  function renderChapters(p) {
+    var active = null, best = 0;
+    var swapping = swap.active;
+    CHAPTERS.forEach(function (name) {
+      var o = chapterOpacity(name, p);
+      var el = chEls[name];
+      if (swapping) return;            // applySwap owns every chapter mid-turn
+      if (el._o === undefined || Math.abs(el._o - o) > 0.002) {
+        el.style.opacity = o.toFixed(3);
+        el._o = o;
+        var live = o > 0.55;
+        el.classList.toggle('is-live', live);
+        el.style.pointerEvents = o > 0.5 ? 'auto' : 'none';
+        el.style.visibility = o < 0.002 ? 'hidden' : 'visible';
+      }
+      if (o > best) { best = o; active = name; }
+    });
+    if (active !== state.activeChapter) {
+      state.activeChapter = active;
+      navLinks.forEach(function (b) { b.classList.toggle('is-here', b.getAttribute('data-ch') === active); });
+      railNum.textContent = '0' + (CHAPTERS.indexOf(active) + 1);
+      railTicks.forEach(function (t, i) { t.classList.toggle('is-on', i === CHAPTERS.indexOf(active)); });
+    }
+
+    // the hero copy is pinned: it must not drift with the scroll
+    if (chEls.hero.style.transform) chEls.hero.style.transform = '';
+  }
+
+  function renderPlates(p) {
+    var oRes = chapterOpacity('resume', p);
+    var oWork = chapterOpacity('work', p);
+    var oHero = 1 - smoothstep(0.05, 0.1, p);
+
+    plateRes.style.opacity = oRes.toFixed(3);
+    plateWork.style.opacity = oWork.toFixed(3);
+    plateRes.style.visibility = oRes < 0.002 ? 'hidden' : 'visible';
+    plateWork.style.visibility = oWork < 0.002 ? 'hidden' : 'visible';
+
+    // the handover is a cut, so this only has to cover a couple of pixels of
+    // scroll where both plates happen to sit near 0.5
+    var cover = smoothstep(0.3600, 0.3660, p) * (1 - smoothstep(0.3820, 0.3880, p));
+    if (plateBed._c === undefined || Math.abs(plateBed._c - cover) > 0.002) {
+      plateBed.style.opacity = cover.toFixed(3);
+      plateBed._c = cover;
+    }
+
+    // the character plates are static: the backdrop must not react to the
+    // content index, so browsing the carousel leaves the photo perfectly still
+    if (plateRes._t === undefined) {
+      plateRes._t = 'scale(1.05)';
+      plateRes.firstElementChild.style.transform = plateRes._t;
+    }
+    if (plateWork._t === undefined) {
+      plateWork._t = 'scale(1.05)';
+      plateWork.firstElementChild.style.transform = plateWork._t;
+    }
+
+    scrimHero.style.opacity = oHero.toFixed(3);
+  }
+
+  /* ---------------------------------------------------------------------
+     6. HERO — pointer-driven gaze (追视), ported from the reference build
+        (D:\AI个人网站\DSH\追视: gaze-core.js + gaze.js)
+
+     The take is 264 webp frames (4:5, 24 fps, 11 s) of the full turntable cut
+     from 首页视频.mp4. They are treated as a map from "where he looks" to
+     "which second of the take", and played frame by frame on a canvas — never
+     a <video> seek:
+
+       1. the pointer is read as a VECTOR FROM THE FACE (normalised by a
+          face-sized radius), not as an absolute screen position;
+       2. the vector's angle picks a hand-tuned ring entry, and neighbouring
+          angles interpolate, so the turn is continuous;
+       3. a radial falloff (smoothstep 0.06 → 0.46) keeps him front-on while the
+          cursor is near the face and only pushes to the edge pose when you move
+          away — that is what makes it read as tracking rather than panning;
+       4. the time is "unwrapped" to the nearest turn so it never jumps half a
+          circle, then eased (k 5.4) with a per-frame rate limit, so a fast
+          flick never snaps;
+       5. when the cursor stops he simply holds that pose (no idle wander);
+       6. looking down adds the original's `--down` nudge (the take's down pose
+          is its weakest), and drawing is locked to an integer fraction of the
+          display refresh rate measured at runtime (60 Hz every frame, 144 Hz
+          every other) so high-refresh screens do not step.
+     --------------------------------------------------------------------- */
+  var GAZE = {
+    DURATION: 11.0,
+    FPS: 24,
+    FRAMES: 264,
+    CENTER_T: 0.15,                       // front, laughing
+    RING: [                               // degrees (0 = right, ccw) -> seconds
+      [0, 1.35], [45, 2.45], [90, 3.30], [135, 4.80], [180, 5.75],
+      [225, 6.90], [270, 8.65], [315, 11.45], [360, 12.35]
+    ],
+    cur: 0.15,
+    vec: { x: 0, y: 0 },
+    down: 0,
+    pull: 1,
+    ready: false,
+    images: [],
+    loaded: 0,
+    failed: 0,
+    drawKey: '',
+    stride: 1,
+    strideLocked: false,
+    ctx: null,
+    rafLast: 0,
+    rafSamples: [],
+    tick: 0,
+    face: { x: 0, y: 0, r: 480 }
+  };
+  var gazeOn = false;
+  var gazeFramesLoading = false;
+  window.__gaze = GAZE;   // debug hook: lets the devtools console read the engine state
+
+  function gazePad3(n) {
+    return n < 10 ? '00' + n : n < 100 ? '0' + n : '' + n;
+  }
+
+  function gazeResize() {
+    if (!gazeCanvas) return;
+    var r = gazeCanvas.getBoundingClientRect();
+    if (!r.width || !r.height) return;
+    var dpr = Math.min(window.devicePixelRatio || 1, 1.25);
+    var w = Math.max(1, Math.round(r.width * dpr));
+    var h = Math.max(1, Math.round(r.height * dpr));
+    if (w !== gazeCanvas.width || h !== gazeCanvas.height) {
+      gazeCanvas.width = w;
+      gazeCanvas.height = h;
+      GAZE.drawKey = '';
+    }
+    GAZE.face.x = r.left + r.width / 2;
+    GAZE.face.y = r.top + r.height * 0.40;
+    GAZE.face.r = Math.max(200, Math.min(window.innerWidth, window.innerHeight) * 0.62);
+  }
+
+  /* the frames are only needed on a pointer device, and only after the film is
+     on screen — loading them early would compete with the first paint */
+  function loadGazeFrames() {
+    if (gazeFramesLoading || isTouch || reduced) return;
+    var conn = navigator.connection;
+    if (conn && (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || ''))) return;
+    gazeFramesLoading = true;
+    for (var i = 0; i < GAZE.FRAMES; i++) {
+      (function (i) {
+        var img = new Image();
+        img.decoding = 'async';
+        img.onload = function () {
+          GAZE.loaded++;
+          if (GAZE.loaded + GAZE.failed >= GAZE.FRAMES) gazeReadyUp();
+          else if (GAZE.ready) drawGaze(true);
+        };
+        img.onerror = function () {
+          GAZE.failed++;
+          if (GAZE.loaded + GAZE.failed >= GAZE.FRAMES) gazeReadyUp();
+        };
+        img.src = 'assets/gaze2/frame_' + gazePad3(i + 1) + '.webp';
+        GAZE.images[i] = img;
+      })(i);
+    }
+  }
+
+  function gazeReadyUp() {
+    if (GAZE.ready) return;
+    GAZE.ready = true;
+    gazeResize();
+    drawGaze(true);
+  }
+
+  function gazeRingTime(deg) {
+    var d = ((deg % 360) + 360) % 360;
+    var R = GAZE.RING;
+    for (var i = 0; i < R.length - 1; i++) {
+      if (d >= R[i][0] && d <= R[i + 1][0]) {
+        var f = (d - R[i][0]) / (R[i + 1][0] - R[i][0]);
+        return R[i][1] + f * (R[i + 1][1] - R[i][1]);
+      }
+    }
+    return R[0][1];
+  }
+
+  function gazeNearest(t, ref) {
+    return t + Math.round((ref - t) / GAZE.DURATION) * GAZE.DURATION;
+  }
+
+  function gazeTargetTime(vec, ref) {
+    var r = Math.min(1, Math.sqrt(vec.x * vec.x + vec.y * vec.y) / 0.78);
+    // x right, y up; the ring is keyed to the direction he actually faces, so
+    // no sign flip here — the ring already matches screen space
+    var deg = Math.atan2(vec.y, vec.x) * 180 / Math.PI;
+    var ring = gazeNearest(gazeRingTime(deg), ref);
+    var center = gazeNearest(GAZE.CENTER_T, ref);
+    return center + (ring - center) * smoothstep(0.06, 0.46, r);
+  }
+
+  function drawGaze(force) {
+    if (!GAZE.ready || !gazeCanvas) return;
+    var t = ((GAZE.cur % GAZE.DURATION) + GAZE.DURATION) % GAZE.DURATION;
+    var exact = t * GAZE.FPS;
+    var i0 = Math.floor(exact) % GAZE.FRAMES;
+    var frac = exact - Math.floor(exact);
+    var i1 = (i0 + 1) % GAZE.FRAMES;
+    var key = i0 + ':' + Math.round(frac * 40);
+    if (!force && key === GAZE.drawKey) return;
+    GAZE.drawKey = key;
+
+    var ctx = GAZE.ctx || (GAZE.ctx = gazeCanvas.getContext('2d', { alpha: false }));
+    if (!ctx) return;
+    var w = gazeCanvas.width;
+    var h = gazeCanvas.height;
+    var a = GAZE.images[i0];
+    var b = GAZE.images[i1];
+
+    if (a && a.complete && a.naturalWidth) {
+      ctx.globalAlpha = 1;
+      ctx.drawImage(a, 0, 0, w, h);
+      if (frac > 0.012 && b && b.complete && b.naturalWidth) {
+        ctx.globalAlpha = frac;
+        ctx.drawImage(b, 0, 0, w, h);
+        ctx.globalAlpha = 1;
+      }
+    }
+  }
+
+  /* called from the main loop; `on` is false once the page starts scrolling,
+     and the portrait then eases back to the front pose while it fades out */
+  function stepGaze(now, dt, on, p) {
+    if (!GAZE.ready) return;
+    if (!on && p > 0.02) return;   // fully faded out: nothing to update
+
+    var rafDt = GAZE.rafLast ? now - GAZE.rafLast : 0;
+    GAZE.rafLast = now;
+    if (!GAZE.strideLocked && rafDt > 4 && rafDt < 40) {
+      GAZE.rafSamples.push(rafDt);
+      if (GAZE.rafSamples.length >= 30) {
+        GAZE.rafSamples.sort(function (a, b) { return a - b; });
+        var median = GAZE.rafSamples[Math.floor(GAZE.rafSamples.length / 2)];
+        GAZE.stride = Math.max(1, Math.min(4, Math.round((1000 / median) / 60)));
+        GAZE.strideLocked = true;
+      }
+    }
+
+    if (!on) {
+      // released: settle to the front pose and shrink toward the film's scale
+      GAZE.cur += (gazeNearest(GAZE.CENTER_T, GAZE.cur) - GAZE.cur) * (1 - Math.exp(-dt * 8));
+      GAZE.down *= Math.exp(-dt * 6);
+      GAZE.pull += (0.875 - GAZE.pull) * (1 - Math.exp(-dt * 7));
+      applyGazeTransform();
+      if (GAZE.tick++ % GAZE.stride === 0) drawGaze(false);
+      return;
+    }
+    GAZE.pull += (1 - GAZE.pull) * (1 - Math.exp(-dt * 7));
+
+    // pointer vector, measured from the face: x right, y up, normalised.
+    // no idle wander: when the cursor stops, he holds the pose he is looking at
+    var tx = clamp((mouse.px - GAZE.face.x) / GAZE.face.r, -2, 2);
+    var ty = clamp(-(mouse.py - GAZE.face.y) / GAZE.face.r, -2, 2);
+
+    var s = 1 - Math.exp(-dt * 7.5);
+    GAZE.vec.x += (tx - GAZE.vec.x) * s;
+    GAZE.vec.y += (ty - GAZE.vec.y) * s;
+
+    var target = gazeTargetTime(GAZE.vec, GAZE.cur);
+    var k = 1 - Math.exp(-dt * 5.4);
+    var maxStep = dt * 5.4;
+    GAZE.cur += clamp((target - GAZE.cur) * k, -maxStep, maxStep);
+
+    // "looking down": the take's down pose is its weakest, so the picture drops
+    // and pushes in a touch, exactly like the original's --down
+    var down = clamp(-GAZE.vec.y, 0, 1);
+    GAZE.down += (down - GAZE.down) * (1 - Math.exp(-dt * 8));
+
+    applyGazeTransform();
+    if (GAZE.tick++ % GAZE.stride === 0) drawGaze(false);
+  }
+
+  function applyGazeTransform() {
+    if (!gazeCanvas) return;
+    var d = GAZE.down;
+    // `pull` shrinks the portrait to the film's character scale while it fades,
+    // so the handover to the scroll film reads as a camera pull-back
+    gazeCanvas.style.transform =
+      'translate(-50%,-50%) translate3d(0,' + (d * 2.4).toFixed(3) + '%,0) rotate(' +
+      (d * 2.6).toFixed(2) + 'deg) scale(' + ((1 + d * 0.09) * GAZE.pull).toFixed(4) + ')';
+  }
+
+  var mouse = { px: 0, py: 0 };
+
+  mouse.px = window.innerWidth * 0.5;
+  mouse.py = window.innerHeight * 0.42;
+
+  window.addEventListener('pointermove', function (e) {
+    if (isTouch) return;
+    mouse.px = e.clientX; mouse.py = e.clientY;
+  }, { passive: true });
+
+  // cursor leaves the window -> he settles back to facing you
+  document.addEventListener('pointerleave', function () {
+    mouse.px = window.innerWidth * 0.5;
+    mouse.py = window.innerHeight * 0.42;
+  });
+
+  window.addEventListener('resize', function () {
+    gazeResize();
+    drawGaze(true);
+  });
+
+  function renderHero(p, dt) {
+    // the hero copy is a fixed editorial block: nothing drifts, nothing tracks
+    // the pointer. The portrait does all the moving.
+    void p; void dt;
+  }
+
+  /* the headline is a fixed three-line block sized in vw, so there is nothing
+     left to solve — kept as a no-op for the boot / resize call sites */
+  function heroTitleFit() {
+    var el = $('#heroTitle');
+    if (el) {
+      el.style.fontSize = '';
+      el.style.transform = '';
+    }
+  }
+
+  function fmt(sec) {
+    sec = Math.max(0, sec || 0);
+    var m = Math.floor(sec / 60), s = Math.floor(sec % 60);
+    return ('0' + m).slice(-2) + ':' + ('0' + s).slice(-2);
+  }
+
+  function renderHud(p) {
+    if (!hudFill) return;
+    hudFill.style.transform = 'scaleX(' + p.toFixed(3) + ')';
+    var t = Math.floor(p * state.duration);
+    if (t !== lastTimecode) {
+      lastTimecode = t;
+      tcNow.textContent = fmt(t);
+    }
+  }
+
+  /* ---------------------------------------------------------------------
+     7. RAIL
+     --------------------------------------------------------------------- */
+  function renderRail(p) {
+    railFill.style.transform = 'scaleY(' + p.toFixed(4) + ')';
+  }
+
+  /* ---------------------------------------------------------------------
+     8. RESUME — a single static list (学校 / 实习 / 现在), no slider any more
+     --------------------------------------------------------------------- */
+  var SLIDES = 1;
+  var resumeDrag = { on: false };
+  function goSlide() {}
+  function layoutSlider() {}
+  function renderResume(p) { void p; }
+
+
+  /* ---------------------------------------------------------------------
+     9. WORK CAROUSEL
+     --------------------------------------------------------------------- */
+  var PROJECTS = [
+    {
+      n: '01', title: '轨道', kind: '品牌影片', year: '2024',
+      client: '轨道航天', role: '导演 · 三维 · 调色', stack: 'Cinema 4D · Redshift · Nuke',
+      text: '为一家卫星初创公司做的零重力产品发布。整颗卫星只做一个主资产，让它在九百米的虚拟机库里自由漂移，只打一盏巨大的柔光箱，加上足够的耐心。最终交付一支 60 秒影片、三条短版和八张平面图。',
+      tags: ['导演', 'CGI', '产品'], a: '#4FD8FF', b: '#1B6FD8', c: '#061426',
+      img: 'assets/work-1.webp'
+    },
+    {
+      n: '02', title: '融化', kind: '角色系列', year: '2023',
+      client: '自主创作', role: '设计 · 动画', stack: 'Blender · ZBrush · Cycles',
+      text: '一组不肯保持形状的面孔。十二个角色，各自雕刻、绑定、做成一个循环：从一张肖像开始，最后化成一滩。都是接案间隙做的，大多是凌晨两点。',
+      tags: ['角色', '动画', '研发'], a: '#7FB4FF', b: '#2A4BE0', c: '#050B22',
+      img: 'assets/work-2.webp'
+    },
+    {
+      n: '03', title: '纸行星', kind: '包装 & CG', year: '2023',
+      client: '新茶', role: '艺术指导 · CGI', stack: 'Houdini · Redshift',
+      text: '六只茶罐，六个折叠出来的世界。我们模拟了现实中做不出来的纸，再对照真实的烫印打样调整，让包装和广告看起来像同一个物件。',
+      tags: ['包装', '模拟', '印刷'], a: '#D6C4FF', b: '#6A3BE0', c: '#120A28',
+      img: 'assets/work-3.webp'
+    },
+    {
+      n: '04', title: '44 号工作室', kind: '网页体验', year: '2022',
+      client: '44 号工作室', role: '设计 · WebGL', stack: 'Three.js · GLSL',
+      text: '一家建筑事务所，希望自己的官网像走进一个模型。一条由着色器驱动的走廊，没有页面，也没有滚动——只有一次很慢的转身。',
+      tags: ['WebGL', '交互', '设计'], a: '#F06BF5', b: '#7A2BF0', c: '#1A0A2C',
+      img: 'assets/work-4.webp'
+    },
+    {
+      n: '05', title: '柔软机器', kind: '装置', year: '2022',
+      client: '西岸艺术周', role: '概念 · 搭建', stack: 'TouchDesigner · Arduino',
+      text: '一间房间大小的布肺，跟着人群一起呼吸。八个传感器、一组风扇阵列，调了四天，才让它像活着而不是一台机器。',
+      tags: ['装置', '实时', '传感'], a: '#6BFFB0', b: '#17A05E', c: '#04160E',
+      img: 'assets/work-5.webp'
+    }
+  ];
+
+  /* ---------------------------------------------------------------------
+     9.5 DEPTH CAROUSEL — 3D cover-flow (port of React Bits <DepthCarousel />)
+     No gsap on this site, so the tween is a hand-rolled `power3.out`
+     (1 - (1-t)^3) running on a proxy `pos` and repainted every frame.
+     --------------------------------------------------------------------- */
+  var dc        = $('#dc');
+  var dcStage   = $('#dcStage');
+  var dcDots    = $('#dcDots');
+  var carouselCount = $('#carouselCount');
+  var carouselHint  = $('#carouselHint');
+
+  var cards = [];
+  var dcS = { pos: 0, scale: 1, raf: 0, cfg: null, dur: 700, wheelT: 0 };
+  var dcDrag = { on: false, moved: false, startX: 0, startPos: 0, lastX: 0, lastT: 0, v: 0, at: 0, id: -1 };
+  window.__dcS = dcS; window.__dcDrag = dcDrag;
+
+  function dcCfg() {
+    var small = isSmall();
+    return {
+      cardW: small ? 240 : 330,
+      cardH: small ? 300 : 390,
+      depth: small ? 160 : 250,
+      spread: small ? 46 : 70,
+      tilt: small ? 14 : 20,
+      visible: small ? 2 : 3,
+      falloff: 0.2,
+      blur: small ? 4 : 6
+    };
+  }
+
+  function dcBuild() {
+    dcStage.innerHTML = '';
+    dcDots.innerHTML = '';
+    cards = [];
+    PROJECTS.forEach(function (pr, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'dc-card';
+      b.setAttribute('aria-label', '打开作品 ' + pr.title);
+      b.style.setProperty('--a', pr.a);
+      b.style.setProperty('--b', pr.b);
+      b.style.setProperty('--c', pr.c);
+      if (pr.img) b.style.setProperty('--img', "url('" + pr.img + "')");
+      b.innerHTML =
+        '<span class="dc-card__art"></span>' +
+        '<span class="dc-card__scrim"></span>' +
+        '<span class="dc-card__kind">' + pr.kind + '</span>' +
+        '<span class="dc-card__num">' + pr.n + '</span>' +
+        '<span class="dc-card__meta">' +
+          '<span class="dc-card__title">' + pr.title + '</span>' +
+          '<span class="dc-card__sub">' + pr.year + ' · ' + pr.client + '</span>' +
+        '</span>' +
+        '<span class="dc-card__tint"></span>';
+      b._tint = b.querySelector('.dc-card__tint');
+      b.addEventListener('pointerenter', function () { state.workHover = true; });
+      b.addEventListener('pointerleave', function () { state.workHover = false; });
+      b.addEventListener('click', function () {
+        if (dcDrag.moved || performance.now() - dcDrag.at < 280) return;
+        if (i === state.workIndex) openDetail(i);
+        else setCarouselTo(i);
+      });
+      dcStage.appendChild(b);
+      cards.push(b);
+
+      var dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'dc__dot';
+      dot.setAttribute('aria-label', '第 ' + (i + 1) + ' 件作品');
+      dot.addEventListener('click', function () { setCarouselTo(i); });
+      dcDots.appendChild(dot);
+    });
+  }
+
+  /* the layout maths of the original component, verbatim */
+  function dcPaint(p) {
+    var n = cards.length;
+    if (!n) return;
+    var c = dcS.cfg || (dcS.cfg = dcCfg());
+    for (var i = 0; i < n; i++) {
+      var d = i - p;
+      if (n > 1) {
+        d = ((d % n) + n) % n;
+        if (d > n / 2) d -= n;
+      }
+      var back = Math.max(0, d);
+      var az = Math.abs(d);
+      var shown = az <= c.visible + 0.5;
+      var tz = -c.depth * d;
+      var tx = c.spread * d;
+      var ry = c.tilt * Math.min(Math.max(d, 0), 1);
+      var op = d < 0 ? Math.max(0, 1 + d) : 1;
+      if (!shown) op = 0;
+      var br = Math.max(0.15, 1 - back * c.falloff);
+      var bl = Math.min(c.blur, (back / Math.max(1, c.visible)) * c.blur);
+      var el = cards[i];
+      el.style.transform =
+        'translate(-50%,-50%) scale(' + dcS.scale.toFixed(4) + ') ' +
+        'translateX(' + tx.toFixed(2) + 'px) translateZ(' + tz.toFixed(2) + 'px) ' +
+        'rotateY(' + ry.toFixed(2) + 'deg)';
+      el.style.opacity = op.toFixed(3);
+      el.style.filter = 'brightness(' + br.toFixed(3) + ') blur(' + bl.toFixed(2) + 'px)';
+      el.style.zIndex = String(Math.round(2000 - d * 20));
+      el.style.pointerEvents = (shown && op > 0.05) ? 'auto' : 'none';
+      if (el._tint) el._tint.style.opacity = Math.min(0.86, Math.max(0, back * c.falloff * 1.25)).toFixed(3);
+    }
+  }
+
+  function dcStop() {
+    if (dcS.raf) { cancelAnimationFrame(dcS.raf); dcS.raf = 0; }
+  }
+
+  function dcGoto(target, animate) {
+    dcStop();
+    var from = dcS.pos;
+    if (!animate) { dcS.pos = target; dcPaint(target); return; }
+    var t0 = performance.now();
+    function step(now) {
+      var t = Math.min(1, (now - t0) / dcS.dur);
+      var e = 1 - Math.pow(1 - t, 3);              /* power3.out */
+      dcS.pos = from + (target - from) * e;
+      dcPaint(dcS.pos);
+      if (t < 1) {
+        dcS.raf = requestAnimationFrame(step);
+      } else {
+        dcS.raf = 0;
+        var n = cards.length || 1;
+        dcS.pos = ((target % n) + n) % n;
+        dcPaint(dcS.pos);
+      }
+    }
+    dcS.raf = requestAnimationFrame(step);
+  }
+
+  function dcFocus(raw, animate) {
+    var n = cards.length;
+    if (!n) return;
+    var idx = ((Math.round(raw) % n) + n) % n;
+    var delta = idx - (dcS.pos % n);
+    if (n > 1) {
+      delta = ((delta % n) + n) % n;
+      if (delta > n / 2) delta -= n;
+    }
+    if (animate === false) { dcStop(); dcS.pos = dcS.pos + delta; dcPaint(dcS.pos); }
+    else dcGoto(dcS.pos + delta, true);
+    state.workIndex = idx;
+    state.workLock = performance.now();
+    carouselCount.textContent = ('0' + (idx + 1)).slice(-2) + ' / 0' + n;
+    for (var i = 0; i < dcDots.children.length; i++) {
+      dcDots.children[i].classList.toggle('is-on', i === idx);
+    }
+  }
+
+  function layoutCarousel() {
+    dcS.cfg = dcCfg();
+    for (var i = 0; i < cards.length; i++) {
+      cards[i].style.width = dcS.cfg.cardW + 'px';
+      cards[i].style.height = dcS.cfg.cardH + 'px';
+    }
+    var w = dc.clientWidth || 560;
+    var needed = dcS.cfg.cardW + Math.abs(dcS.cfg.spread) * 2 + 120;
+    dcS.scale = Math.min(1, Math.max(0.4, w / needed));
+    /* hug the card: a fixed height left a dead band above and below it */
+    dc.style.height = Math.round(dcS.cfg.cardH * dcS.scale + 46) + 'px';
+    dcPaint(dcS.pos);
+  }
+
+  function setCarouselTo(idx, instant) {
+    if (!cards.length) return;
+    dcFocus(clamp(idx, 0, cards.length - 1), !instant);
+  }
+
+  function renderWork(p, dt) {
+    if (!cards.length) return;
+    var o = chapterOpacity('work', p);
+    if (o < 0.01) { state.workLock = 0; }
+  }
+
+  /* drag the stage sideways: a press that never moves is a click on a card */
+  dc.addEventListener('pointerdown', function (e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    if (!cards.length) return;
+    dcDrag.on = true;
+    dcDrag.moved = false;
+    dcDrag.startX = e.clientX;
+    dcDrag.startPos = dcS.pos;
+    dcDrag.lastX = e.clientX;
+    dcDrag.lastT = performance.now();
+    dcDrag.v = 0;
+    dcDrag.id = e.pointerId;
+  });
+
+  dc.addEventListener('pointermove', function (e) {
+    if (!dcDrag.on) return;
+    var dx = e.clientX - dcDrag.startX;
+    if (!dcDrag.moved && Math.abs(dx) > 4) {
+      dcDrag.moved = true;
+      dcStop();
+      dc.classList.add('is-drag');
+      try { dc.setPointerCapture(dcDrag.id); } catch (err) {}
+    }
+    if (!dcDrag.moved) return;
+    var now = performance.now();
+    var dt = Math.max(1, now - dcDrag.lastT);
+    dcDrag.v = (e.clientX - dcDrag.lastX) / dt;
+    dcDrag.lastX = e.clientX;
+    dcDrag.lastT = now;
+    var stepPx = Math.max((dcS.cfg || dcCfg()).cardW * 0.55 * dcS.scale, 40);
+    dcS.pos = dcDrag.startPos - dx / stepPx;
+    dcPaint(dcS.pos);
+  });
+
+  function dcEndDrag() {
+    if (!dcDrag.on) return;
+    dcDrag.on = false;
+    dc.classList.remove('is-drag');
+    if (!dcDrag.moved) return;
+    var stepPx = Math.max((dcS.cfg || dcCfg()).cardW * 0.55 * dcS.scale, 40);
+    dcDrag.at = performance.now();
+    dcFocus(dcS.pos - dcDrag.v * 180 / stepPx, true);
+  }
+  dc.addEventListener('pointerup', dcEndDrag);
+  dc.addEventListener('pointercancel', dcEndDrag);
+
+  /* horizontal wheel / trackpad drift nudges the fan; a vertical wheel is
+     still a page turn, so it is passed straight through */
+  dc.addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    e.preventDefault();
+    var c = dcS.cfg || dcCfg();
+    dcStop();
+    dcS.pos += clamp((e.deltaX / (c.cardW * 0.9)), -0.6, 0.6);
+    dcPaint(dcS.pos);
+    clearTimeout(dcS.wheelT);
+    dcS.wheelT = setTimeout(function () { dcFocus(dcS.pos, true); }, 130);
+  }, { passive: false });
+
+  $('#dcPrev').addEventListener('click', function () { setCarouselTo(state.workIndex - 1); });
+  $('#dcNext').addEventListener('click', function () { setCarouselTo(state.workIndex + 1); });
+
+  // autoplay: advance one card every 4.5 s while the visitor is idle
+  setInterval(function () {
+    if (state.modalOpen || state.workHover || reduced || dcDrag.on) return;
+    if (chapterOpacity('work', state.layout) < 0.75) return;
+    if (performance.now() - state.lastScroll < 3200) return;
+    if (performance.now() - (dcDrag.at || 0) < 5000) return;
+    if (document.hidden) return;
+    var next = state.workIndex + 1;
+    if (next > cards.length - 1) next = 0;
+    setCarouselTo(next);
+  }, 4500);
+
+  /* ---------------------------------------------------------------------
+     10. DETAIL MODAL
+     --------------------------------------------------------------------- */
+  var detail     = $('#detail');
+  var detailArt  = $('#detailArt');
+  var detailNum  = $('#detailNum');
+  var detailKind = $('#detailKind');
+  var detailTitle= $('#detailTitle');
+  var detailClient = $('#detailClient');
+  var detailRole = $('#detailRole');
+  var detailYear = $('#detailYear');
+  var detailStack= $('#detailStack');
+  var detailText = $('#detailText');
+  var detailTags = $('#detailTags');
+  var currentProject = 0;
+  var lastFocus = null;
+
+  function openDetail(i) {
+    currentProject = i;
+    fillDetail(i);
+    state.modalOpen = true;
+    detail.classList.add('is-open');
+    document.body.classList.add('is-locked');
+    lastFocus = document.activeElement;
+    $('#detailClose').focus({ preventScroll: true });
+  }
+
+  function fillDetail(i) {
+    var pr = PROJECTS[i];
+    detailArt.style.setProperty('--a', pr.a);
+    detailArt.style.setProperty('--b', pr.b);
+    detailArt.style.setProperty('--c', pr.c);
+    if (pr.img) detailArt.style.setProperty('--img', "url('" + pr.img + "')"); else detailArt.style.removeProperty('--img');
+    detailNum.textContent = pr.n;
+    detailKind.textContent = pr.kind + ' — ' + pr.year;
+    detailTitle.textContent = pr.title;
+    detailClient.textContent = pr.client;
+    detailRole.textContent = pr.role;
+    detailYear.textContent = pr.year;
+    detailStack.textContent = pr.stack;
+    detailText.textContent = pr.text;
+    detailTags.innerHTML = pr.tags.map(function (t) { return '<span class="tag">' + t + '</span>'; }).join('');
+  }
+
+  function closeDetail() {
+    state.modalOpen = false;
+    detail.classList.remove('is-open');
+    document.body.classList.remove('is-locked');
+    if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+  }
+
+  function stepDetail(d) {
+    currentProject = (currentProject + d + PROJECTS.length) % PROJECTS.length;
+    fillDetail(currentProject);
+    state.workIndex = currentProject;
+    state.workLock = performance.now();
+    setCarouselTo(currentProject);
+  }
+
+  $('#detailClose').addEventListener('click', closeDetail);
+  $('#detailPrev').addEventListener('click', function () { stepDetail(-1); });
+  $('#detailNext').addEventListener('click', function () { stepDetail(1); });
+  detail.addEventListener('click', function (e) { if (e.target.hasAttribute('data-close')) closeDetail(); });
+
+  /* ---------------------------------------------------------------------
+     10.5 CONTACT SHEET — the hero CTA opens a copy-to-clipboard card
+     --------------------------------------------------------------------- */
+  var sheet = $('#contactSheet');
+  var sheetClose = $('#sheetClose');
+  var heroContact = $('#heroContact');
+  var sheetFocus = null;
+
+  function openSheet() {
+    if (!sheet) return;
+    sheetFocus = document.activeElement;
+    sheet.classList.add('is-open');
+    sheet.setAttribute('aria-hidden', 'false');
+    state.modalOpen = true;
+    if (sheetClose) sheetClose.focus({ preventScroll: true });
+  }
+
+  function closeSheet() {
+    if (!sheet || !sheet.classList.contains('is-open')) return;
+    sheet.classList.remove('is-open');
+    sheet.setAttribute('aria-hidden', 'true');
+    state.modalOpen = false;
+    if (sheetFocus && sheetFocus.focus) sheetFocus.focus({ preventScroll: true });
+  }
+
+  if (heroContact) heroContact.addEventListener('click', openSheet);
+  if (sheetClose) sheetClose.addEventListener('click', closeSheet);
+  if (sheet) {
+    sheet.addEventListener('click', function (e) {
+      if (e.target.closest('[data-sheet-close]')) closeSheet();
+    });
+  }
+
+  var mailEl = document.querySelector('.contact__mail');
+  if (mailEl) {
+    mailEl.addEventListener('click', function () {
+      var val = mailEl.getAttribute('data-copy') || '';
+      var mark = function () {
+        mailEl.classList.add('is-copied');
+        clearTimeout(mailEl._copiedAt);
+        mailEl._copiedAt = setTimeout(function () { mailEl.classList.remove('is-copied'); }, 1800);
+      };
+      var legacy = function () {
+        var ta = document.createElement('textarea');
+        ta.value = val;
+        ta.setAttribute('readonly', '');
+        ta.style.cssText = 'position:fixed;top:-1000px;left:-1000px;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (err) {}
+        document.body.removeChild(ta);
+        mark();
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(val).then(mark, legacy);
+      } else {
+        legacy();
+      }
+    });
+  }
+
+  [].slice.call(document.querySelectorAll('.sheet__row')).forEach(function (row) {
+    row.addEventListener('click', function () {
+      var val = row.getAttribute('data-copy') || '';
+      var mark = function () {
+        row.classList.add('is-copied');
+        clearTimeout(row._copiedAt);
+        row._copiedAt = setTimeout(function () { row.classList.remove('is-copied'); }, 1800);
+      };
+      var legacy = function () {
+        var ta = document.createElement('textarea');
+        ta.value = val;
+        ta.setAttribute('readonly', '');
+        ta.style.cssText = 'position:fixed;top:-1000px;left:-1000px;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (err) {}
+        document.body.removeChild(ta);
+        mark();
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(val).then(mark, legacy);
+      } else {
+        legacy();
+      }
+    });
+  });
+
+  /* ---------------------------------------------------------------------
+     11. NAVIGATION — nav links and the rail jump straight to a page
+     --------------------------------------------------------------------- */
+  function scrollToProgress(p) {
+    p = clamp(p, 0, 1);
+    var i = pageOf(p);
+    var prevPage = state.page;
+    state.page = i;
+    state.target = PAGES[i];
+    pageLockAt = performance.now();
+    wheelAcc = 0;
+    state.lastScroll = performance.now();
+    beginSwap(prevPage, i);
+    if (gooeyNav) gooeyNav.setActive(i);
+  }
+  window.scrollToChapter = scrollToProgress;
+
+  navLinks.forEach(function (b) {
+    b.addEventListener('click', function () { scrollToProgress(parseFloat(b.getAttribute('data-go'))); });
+  });
+  $('#toTop').addEventListener('click', function () { scrollToProgress(0); });
+
+  /* ---------------------------------------------------------------------
+     13.5 GOOEY NAV
+     Ported from React Bits <GooeyNav /> (the WebGL metaball shader is
+     replaced by a marching-squares outline used as a clip-path on a solid
+     pill, which renders the same geometry without a GL context). While an
+     item is selected the outgoing pill melts into droplets that fly across
+     the bar and merge into the incoming one.
+     --------------------------------------------------------------------- */
+  var gooeyNav = (function () {
+    var host = $('#gooeyNav');
+    if (!host) return null;
+    var stage = host.querySelector('.gooey-stage');
+    var list = host.querySelector('.gooey-links');
+    var inkList = host.querySelector('.gooey-links--ink');
+    var blobEl = host.querySelector('.gooey-blob');
+    var hoverEl = host.querySelector('.gooey-hover');
+    var items = [].slice.call(list.children);
+    var MARGIN = 56, MAX_DROPS = 32;
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var GOO = { particleCount: 15, spread: 54, animationTime: 620, timeVariance: 280, gooeyness: 0.55, wobble: 0.5 };
+
+    var rects = [], view = { w: 1, h: 1 }, target = -1;
+    var pills = {}, drops = [];
+    var hover = { index: -1, x: 0, y: 0, w: 0, h: 0, a: 0 };
+    var raf = 0, last = 0;
+
+    function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+    function travelEase(t) { var x = clamp01(t); return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
+    function bezier(a, b, c, d, t) {
+      var u = 1 - t;
+      return u * u * u * a + 3 * u * u * t * b + 3 * u * t * t * c + t * t * t * d;
+    }
+
+    function measure() {
+      var box = stage.getBoundingClientRect();
+      view.w = Math.max(1, box.width);
+      view.h = Math.max(1, box.height);
+      rects = items.map(function (item) {
+        var r = item.getBoundingClientRect();
+        return { x: r.left - box.left, y: r.top - box.top, w: r.width, h: r.height };
+      });
+    }
+
+    function pillAt(i) {
+      if (!pills[i]) pills[i] = { mass: 0, scale: 0, velocity: 0, outgoing: 0 };
+      return pills[i];
+    }
+
+    function shapeOf(i, amount) {
+      var r = rects[i];
+      if (!r || amount <= 0.002) return null;
+      var h = r.h * Math.min(1.08, 0.42 + 0.58 * Math.sqrt(Math.max(0, amount)));
+      var w = Math.max(h, r.w * Math.pow(Math.max(0, amount), 0.75));
+      return { x: r.x + r.w / 2 - w / 2, y: r.y + r.h / 2 - h / 2, w: w, h: h };
+    }
+
+    // signed distance to the union of the pills and the droplets, with the
+    // smooth-min blend that produces the melted neck between them
+    function sdf(x, y, boxes, blobs, smooth) {
+      var d = 1e5;
+      function merge(v) {
+        var h = clamp01(0.5 + 0.5 * (v - d) / smooth);
+        d = v + (d - v) * h - smooth * h * (1 - h);
+      }
+      for (var i = 0; i < boxes.length; i++) {
+        var b = boxes[i], r = Math.min(b.hw, b.hh);
+        var qx = Math.abs(x - b.cx) - b.hw + r;
+        var qy = Math.abs(y - b.cy) - b.hh + r;
+        var mx = Math.max(qx, 0), my = Math.max(qy, 0);
+        merge(Math.sqrt(mx * mx + my * my) + Math.min(Math.max(qx, qy), 0) - r);
+      }
+      for (var j = 0; j < blobs.length; j++) {
+        var bl = blobs[j];
+        var px = x - bl.x, py = y - bl.y;
+        var bx = -bl.tx, by = -bl.ty;
+        var span = bx * bx + by * by;
+        var hh = span > 0.0001 ? clamp01((px * bx + py * by) / span) : 0;
+        var dx = px - bx * hh, dy = py - by * hh;
+        var v2 = Math.sqrt(dx * dx + dy * dy) - bl.r;
+        if (v2 > d + smooth) continue;
+        merge(v2);
+      }
+      return d;
+    }
+
+    // scan the SDF row by row and emit one flat run per row: a per-pixel
+    // staircase is cheap, always fills correctly and is invisible at the
+    // 30 px height this nav actually renders at
+    function trace(boxes, blobs, smooth) {
+      var segs = [], step = 2, y, x, prev, start, v, cross;
+      for (y = 0; y < view.h; y += 1) {
+        var cy = y + 0.5;
+        prev = sdf(0, cy, boxes, blobs, smooth);
+        start = prev < 0 ? 0 : null;
+        for (x = step; x <= view.w + step; x += step) {
+          v = sdf(Math.min(x, view.w), cy, boxes, blobs, smooth);
+          if ((prev < 0) !== (v < 0)) {
+            cross = x - step + (step * prev) / (prev - v);
+            if (v < 0) start = cross;
+            else if (start !== null) { segs.push({ y: y, a: start, b: cross }); start = null; }
+          }
+          prev = v;
+        }
+        if (start !== null) segs.push({ y: y, a: start, b: view.w });
+      }
+      return segs;
+    }
+
+    function segsPath(segs, ox, oy) {
+      var out = '';
+      for (var i = 0; i < segs.length; i++) {
+        var s = segs[i], y = s.y + oy;
+        out += 'M' + (s.a + ox).toFixed(1) + ',' + y.toFixed(0) +
+               'H' + (s.b + ox).toFixed(1) + 'V' + (y + 1).toFixed(0) +
+               'H' + (s.a + ox).toFixed(1) + 'Z';
+      }
+      return out || 'M0,0Z';
+    }
+
+    function pillPath(x, y, w, h) {
+      var r = Math.min(w, h) / 2;
+      return 'M' + (x + r).toFixed(1) + ',' + y.toFixed(1) +
+             'H' + (x + w - r).toFixed(1) +
+             'A' + r.toFixed(1) + ',' + r.toFixed(1) + ' 0 0 1 ' + (x + w).toFixed(1) + ',' + (y + r).toFixed(1) +
+             'V' + (y + h - r).toFixed(1) +
+             'A' + r.toFixed(1) + ',' + r.toFixed(1) + ' 0 0 1 ' + (x + w - r).toFixed(1) + ',' + (y + h).toFixed(1) +
+             'H' + (x + r).toFixed(1) +
+             'A' + r.toFixed(1) + ',' + r.toFixed(1) + ' 0 0 1 ' + x.toFixed(1) + ',' + (y + h - r).toFixed(1) +
+             'V' + (y + r).toFixed(1) +
+             'A' + r.toFixed(1) + ',' + r.toFixed(1) + ' 0 0 1 ' + (x + r).toFixed(1) + ',' + y.toFixed(1) + 'Z';
+    }
+
+    function plan(drop, index, now, fresh) {
+      var rect = rects[index];
+      if (!rect) return;
+      var reach = Math.max(0, GOO.spread);
+      var ex = rect.x + rect.w / 2 + (Math.random() - 0.5) * rect.w * 0.45;
+      var ey = rect.y + rect.h / 2 + (Math.random() - 0.5) * rect.h * 0.2;
+      var base = Math.max(0.15, GOO.animationTime / 1000);
+      var variance = (Math.random() - 0.5) * (Math.max(0, GOO.timeVariance) / 1000);
+      var duration = Math.max(0.15, base * (0.62 + Math.random() * 0.32) + variance * 0.6);
+      var out = Math.random() * Math.PI * 2;
+      var into = Math.random() * Math.PI * 2;
+      var burst = reach * (0.7 + Math.random() * 0.6);
+      var swing = reach * (0.55 + Math.random() * 0.55);
+      var carry = Math.min(duration / 3, 0.12);
+      drop.index = index;
+      drop.start = now;
+      drop.duration = duration;
+      drop.path = [
+        drop.x, drop.y,
+        fresh ? drop.x + Math.cos(out) * burst * 1.6 : drop.x + drop.vx * carry,
+        fresh ? drop.y + Math.sin(out) * burst * 1.6 : drop.y + drop.vy * carry,
+        ex + Math.cos(into) * swing * 1.5,
+        ey + Math.sin(into) * swing * 1.5,
+        ex, ey
+      ];
+    }
+
+    function emit(from, to, now) {
+      var source = pills[from], rect = rects[from];
+      if (!source || !rect || !rects[to]) return;
+      var available = source.mass - source.outgoing;
+      if (available <= 0.002) return;
+      var room = MAX_DROPS - drops.length;
+      var count = Math.min(room, Math.max(1, Math.round(Math.max(1, GOO.particleCount) * available)));
+      if (count <= 0) return;
+      var win = Math.max(0.15, GOO.animationTime / 1000) * 0.16;
+      for (var i = 0; i < count; i++) {
+        var mass = available / count;
+        source.outgoing += mass;
+        drops.push({
+          x: rect.x + rect.w / 2 + (Math.random() - 0.5) * rect.w * 0.6,
+          y: rect.y + rect.h / 2 + (Math.random() - 0.5) * rect.h * 0.3,
+          vx: 0, vy: 0, mass: mass, size: 0.8 + Math.random() * 0.4,
+          given: 0, source: from, index: to,
+          leave: now + Math.random() * win * 1000,
+          emerged: 0, absorbed: 0, state: 'waiting', path: [0, 0, 0, 0, 0, 0, 0, 0]
+        });
+      }
+    }
+
+    function render() {
+      var h = (rects[target] && rects[target].h) || (rects[0] && rects[0].h) || 30;
+      var smooth = h * (0.18 + 0.5 * clamp01(GOO.gooeyness));
+      var boxes = [], blobs = [], k, st, box, i, drop;
+      for (k in pills) {
+        st = pills[k];
+        box = shapeOf(+k, st.scale);
+        if (box) boxes.push({ cx: box.x + box.w / 2, cy: box.y + box.h / 2, hw: box.w / 2, hh: box.h / 2 });
+      }
+      for (i = 0; i < drops.length; i++) {
+        drop = drops[i];
+        if (drop.state === 'waiting') continue;
+        var r = 0.26 * h * drop.size * Math.min(drop.emerged, 1 - drop.absorbed);
+        if (r <= 0.05) continue;
+        var speed = Math.sqrt(drop.vx * drop.vx + drop.vy * drop.vy);
+        var len = Math.min(r * 1.1, speed * 0.018);
+        blobs.push({
+          x: drop.x, y: drop.y, r: r,
+          tx: speed > 0.01 ? (drop.vx / speed) * len : 0,
+          ty: speed > 0.01 ? (drop.vy / speed) * len : 0
+        });
+      }
+      var ink, blobD;
+      if (boxes.length === 1 && !blobs.length) {
+        var b0 = boxes[0];
+        var px = b0.cx - b0.hw, py = b0.cy - b0.hh, pw = b0.hw * 2, ph = b0.hh * 2;
+        ink = pillPath(px, py, pw, ph);
+        blobD = pillPath(px + MARGIN, py + MARGIN, pw, ph);
+      } else {
+        var segs = trace(boxes, blobs, smooth);
+        ink = segsPath(segs, 0, 0);
+        blobD = segsPath(segs, MARGIN, MARGIN);
+      }
+      blobEl.style.clipPath = 'path("' + blobD + '")';
+      inkList.style.clipPath = 'path("' + ink + '")';
+    }
+
+    function frame(now) {
+      raf = 0;
+      var dt = Math.min(0.05, (now - last) / 1000 || 0);
+      last = now;
+      var emergeTime = 0.09, absorbTime = 0.12, i, drop, key, st;
+      for (i = drops.length - 1; i >= 0; i--) {
+        drop = drops[i];
+        if (drop.state === 'waiting') {
+          if (now < drop.leave) continue;
+          drop.state = 'flying';
+          plan(drop, drop.index, now, true);
+        }
+        if (drop.state === 'flying') {
+          drop.emerged = Math.min(1, drop.emerged + dt / emergeTime);
+          var src = pills[drop.source];
+          if (src && drop.given < drop.mass) {
+            var step = Math.min(drop.mass * (dt / emergeTime), drop.mass - drop.given);
+            src.mass = Math.max(0, src.mass - step);
+            src.outgoing = Math.max(0, src.outgoing - step);
+            drop.given += step;
+          }
+          var t = clamp01((now - drop.start) / 1000 / drop.duration);
+          var e = travelEase(t);
+          var p = drop.path;
+          var nx = bezier(p[0], p[2], p[4], p[6], e);
+          var ny = bezier(p[1], p[3], p[5], p[7], e);
+          if (dt > 0) { drop.vx = (nx - drop.x) / dt; drop.vy = (ny - drop.y) / dt; }
+          drop.x = nx; drop.y = ny;
+          if (t >= 1) drop.state = 'absorbing';
+        }
+        if (drop.state === 'absorbing') {
+          var step2 = Math.min(1 - drop.absorbed, dt / absorbTime);
+          drop.absorbed += step2;
+          drop.vx *= 0.8; drop.vy *= 0.8;
+          var hostPill = pillAt(drop.index);
+          hostPill.mass = Math.min(1, hostPill.mass + drop.mass * step2);
+          if (drop.absorbed >= 1) drops.splice(i, 1);
+        }
+      }
+
+      var zeta = reduced ? 1 : 1 - 0.72 * clamp01(GOO.wobble);
+      var omega = 26;
+      var steps = Math.max(1, Math.ceil(dt / (1 / 240)));
+      var hstep = dt / steps;
+      for (key in pills) {
+        st = pills[key];
+        for (var n = 0; n < steps; n++) {
+          st.velocity += (omega * omega * (st.mass - st.scale) - 2 * zeta * omega * st.velocity) * hstep;
+          st.scale += st.velocity * hstep;
+        }
+        if (+key !== target && st.mass <= 0.002 && st.outgoing <= 0.002 && Math.abs(st.scale) < 0.004) {
+          delete pills[key];
+        }
+      }
+
+      if (hover.index >= 0 && rects[hover.index]) {
+        var hr = rects[hover.index];
+        var kk = 1 - Math.exp(-dt / 0.06);
+        hover.x += (hr.x + hr.w / 2 - hover.x) * kk;
+        hover.y += (hr.y + hr.h / 2 - hover.y) * kk;
+        hover.w += (hr.w - hover.w) * kk;
+        hover.h += (hr.h - hover.h) * kk;
+        hoverEl.style.width = hover.w.toFixed(1) + 'px';
+        hoverEl.style.height = hover.h.toFixed(1) + 'px';
+        hoverEl.style.transform = 'translate3d(' + (hover.x - hover.w / 2).toFixed(1) + 'px,' +
+          (hover.y - hover.h / 2).toFixed(1) + 'px,0)';
+      }
+      var hoverGoal = hover.index >= 0 && hover.index !== target ? 1 : 0;
+      hover.a += (hoverGoal - hover.a) * (1 - Math.exp(-dt / 0.08));
+      hoverEl.style.opacity = hover.a.toFixed(3);
+
+      render();
+
+      var hostP = pills[target];
+      var rest = !drops.length && hostP && Object.keys(pills).length === 1 &&
+        Math.abs(hostP.mass - hostP.scale) < 0.0008 && Math.abs(hostP.velocity) < 0.004 &&
+        Math.abs(hoverGoal - hover.a) < 0.003;
+      if (!rest) raf = requestAnimationFrame(frame);
+      else {
+        hostP.mass = 1; hostP.scale = 1; hostP.velocity = 0; hover.a = hoverGoal;
+        render();
+      }
+    }
+
+    function wake() {
+      if (raf) return;
+      last = performance.now();
+      raf = requestAnimationFrame(frame);
+    }
+
+    function settle(index) {
+      pills = {}; drops = [];
+      target = index;
+      var st = pillAt(index);
+      st.mass = 1; st.scale = 1; st.velocity = 0;
+      render();
+    }
+
+    function go(index, animate) {
+      if (index === target || index < 0 || index >= rects.length) return;
+      if (!animate || reduced) { measure(); settle(index); return; }
+      var now = performance.now();
+      target = index;
+      pillAt(index);
+      for (var i = 0; i < drops.length; i++) {
+        var drop = drops[i];
+        drop.index = index;
+        if (drop.state === 'flying') plan(drop, index, now, false);
+        if (drop.state === 'absorbing') {
+          drop.state = 'flying';
+          drop.mass *= 1 - drop.absorbed;
+          drop.absorbed = 0;
+          plan(drop, index, now, false);
+        }
+      }
+      for (var key in pills) if (+key !== index) emit(+key, index, now);
+      wake();
+    }
+
+    list.addEventListener('pointerover', function (e) {
+      var item = e.target.closest('[data-gooey-index]');
+      if (!item) return;
+      var index = Number(item.getAttribute('data-gooey-index'));
+      var rect = rects[index];
+      if (!rect) return;
+      if (hover.a < 0.01) {
+        hover.x = rect.x + rect.w / 2;
+        hover.y = rect.y + rect.h / 2;
+        hover.w = rect.w;
+        hover.h = rect.h;
+      }
+      hover.index = index;
+      wake();
+    });
+    list.addEventListener('pointerleave', function () { hover.index = -1; wake(); });
+
+    measure();
+    settle(0);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { measure(); if (!drops.length) settle(target); });
+    }
+    window.addEventListener('resize', function () {
+      measure();
+      if (!drops.length) settle(target);
+    });
+
+    return {
+      setActive: function (index) { go(index, true); },
+      refresh: function () { measure(); settle(target); },
+      debug: function () {
+        var out = {};
+        for (var k in pills) {
+          out[k] = pills[k].mass.toFixed(3) + '|' + pills[k].scale.toFixed(3) + '|' + pills[k].outgoing.toFixed(3);
+        }
+        return { drops: drops.length, pills: out, target: target, rest: !raf };
+      }
+    };
+  })();
+  window.__gooey = gooeyNav;
+
+  /* ---------------------------------------------------------------------
+     12. CURSOR
+     --------------------------------------------------------------------- */
+  var cursor = $('#cursor');
+  var cursorLabel = $('#cursorLabel');
+  var cur = { x: window.innerWidth / 2, y: window.innerHeight / 2, rx: window.innerWidth / 2, ry: window.innerHeight / 2 };
+
+  if (!isTouch) {
+    document.documentElement.classList.add('has-cursor');
+
+    // 1:1 with the pointer: no easing, no rAF hop. transform is written straight
+    // from the event handler, so the arrow lands in the same frame the browser
+    // paints the move instead of trailing it by two or three frames.
+    function paintCursor() {
+      cursor.style.transform = 'translate3d(' + cur.x.toFixed(1) + 'px,' + cur.y.toFixed(1) + 'px,0)';
+    }
+    function trackPoint(e) {
+      cur.x = e.clientX; cur.y = e.clientY;
+      paintCursor();
+      if (!cursor.classList.contains('is-live')) cursor.classList.add('is-live');
+    }
+
+    // pointerrawupdate fires before Chrome coalesces/aligned-delays pointermove
+    // (it can arrive 1–4 times per frame), which is what makes a custom cursor
+    // feel tighter than the compositor's own pointer
+    window.addEventListener('pointerrawupdate', trackPoint, { passive: true });
+    window.addEventListener('pointermove', function (e) {
+      trackPoint(e);
+      var tgt = e.target && e.target.closest ? e.target : null;
+      var hov = tgt ? tgt.closest('[data-cursor], a, button, .card') : null;
+      if (hov) {
+        cursor.classList.add('is-hover');
+        var lbl = hov.getAttribute('data-cursor') || (hov.classList.contains('card') ? '打开' : '');
+        if (cursorLabel.textContent !== (lbl || '')) cursorLabel.textContent = lbl || '';
+      } else {
+        cursor.classList.remove('is-hover');
+        if (cursorLabel.textContent) cursorLabel.textContent = '';
+      }
+    }, { passive: true });
+    window.addEventListener('pointerdown', function () { cursor.classList.add('is-press'); }, { passive: true });
+    window.addEventListener('pointerup', function () { cursor.classList.remove('is-press'); }, { passive: true });
+
+    // the fixed element lives at 0,0 with a negative margin, so a plain
+    // translate3d keeps it on its own compositor layer
+    paintCursor();
+  }
+
+  /* ---------------------------------------------------------------------
+     12.5 SPECULAR BUTTON — hero CTA rim light, ported from the React Bits
+     <SpecularButton /> component to plain JS + WebGL2 (no framework).
+     A rounded-box SDF gives the pill outline; a "loop position" maps the
+     perimeter to 0..1 so two lobes of light can chase the pointer's
+     nearest rim point and melt back to the rest corner when it leaves.
+     --------------------------------------------------------------------- */
+  (function specularButton() {
+    var btn = document.getElementById('heroContact');
+    if (!btn) return;
+    var canvas = btn.querySelector('.spec-btn__light');
+    if (!canvas) return;
+
+    var PAD = 24;
+    var TAU = Math.PI * 2;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var gl = canvas.getContext('webgl2', {
+      alpha: true, premultipliedAlpha: true, antialias: false, depth: false, stencil: false
+    });
+    if (!gl) return;
+
+    var VERTEX = '#version 300 es\nin vec2 aPosition;\nvoid main(){gl_Position=vec4(aPosition,0.0,1.0);}';
+    var FRAGMENT = [
+      '#version 300 es',
+      'precision highp float;',
+      'uniform vec2 uCenter;uniform vec2 uHalf;uniform float uRadius;uniform float uPx;',
+      'uniform float uSpot;uniform vec2 uEntry;uniform vec3 uLineColor;uniform vec3 uBaseColor;',
+      'uniform float uIntensity;uniform vec2 uWindow;uniform float uThickness;uniform float uGlow;',
+      'out vec4 outColor;',
+      'float roundedBox(vec2 p,vec2 b,float r){vec2 q=abs(p)-b+r;return length(max(q,0.0))+min(max(q.x,q.y),0.0)-r;}',
+      'float loopPosition(vec2 p,vec2 b,float r){',
+      '  vec2 inner=b-r;float arc=1.5707963*r;float quarter=inner.x+inner.y+arc;',
+      '  vec2 a=abs(p);vec2 q=a-inner;',
+      '  float s=q.x>0.0&&q.y>0.0?inner.y+atan(q.y,q.x)*r:(q.x>q.y?min(a.y,inner.y):inner.y+arc+inner.x-min(a.x,inner.x));',
+      '  if(p.x<0.0)s=p.y>=0.0?2.0*quarter-s:2.0*quarter+s; else if(p.y<0.0)s=4.0*quarter-s;',
+      '  return s/max(4.0*quarter,0.0001);',
+      '}',
+      'float lobe(float position,float center){float gap=abs(fract(position-center+0.5)-0.5);',
+      '  return 1.0-smoothstep(uWindow.x,uWindow.x+uWindow.y,gap);}',
+      'void main(){',
+      '  vec2 p=gl_FragCoord.xy-uCenter;',
+      '  float d=roundedBox(p,uHalf,uRadius);',
+      '  float position=loopPosition(p,uHalf,uRadius);',
+      '  float key=lobe(position,uSpot);float back=lobe(position,uSpot+0.5);',
+      '  float streak=key+back*0.45;',
+      '  float width=max(uThickness*uPx*mix(1.0,max(key,back),0.6),0.35);',
+      '  float band=smoothstep(-width-0.6,-width+0.6,d)*(1.0-smoothstep(-0.6,0.6,d));',
+      '  float hair=smoothstep(-uPx-0.6,-uPx+0.6,d)*(1.0-smoothstep(-0.6,0.6,d));',
+      '  float inside=1.0-smoothstep(-0.6,0.6,d);',
+      '  vec2 pool=(p-uEntry)/(uHalf.y*vec2(1.6,1.1));',
+      '  float glow=streak*0.2*exp(-abs(d+width*0.5)/(5.0*uPx))+inside*0.08*exp(-dot(pool,pool));',
+      '  float light=clamp((band*streak+glow*uGlow)*uIntensity,0.0,1.0);',
+      '  vec4 base=vec4(uBaseColor,1.0)*hair*0.6;',
+      '  outColor=vec4(uLineColor,1.0)*light+base*(1.0-light);',
+      '}'
+    ].join('\n');
+
+    var NAMES = ['uCenter', 'uHalf', 'uRadius', 'uPx', 'uSpot', 'uEntry', 'uLineColor',
+      'uBaseColor', 'uIntensity', 'uWindow', 'uThickness', 'uGlow'];
+
+    function compile(type, src) {
+      var sh = gl.createShader(type);
+      if (!sh) return null;
+      gl.shaderSource(sh, src);
+      gl.compileShader(sh);
+      if (gl.getShaderParameter(sh, gl.COMPILE_STATUS)) return sh;
+      gl.deleteShader(sh);
+      return null;
+    }
+    var vs = compile(gl.VERTEX_SHADER, VERTEX);
+    var fs = compile(gl.FRAGMENT_SHADER, FRAGMENT);
+    var program = gl.createProgram();
+    if (!vs || !fs || !program) return;
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+    gl.bindAttribLocation(program, 0, 'aPosition');
+    gl.linkProgram(program);
+    gl.deleteShader(vs);
+    gl.deleteShader(fs);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+
+    var u = {};
+    for (var n = 0; n < NAMES.length; n++) u[NAMES[n]] = gl.getUniformLocation(program, NAMES[n]);
+    var buffer = gl.createBuffer();
+    var vao = gl.createVertexArray();
+    gl.bindVertexArray(vao);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    gl.bindVertexArray(null);
+
+    var S = {
+      radius: 999,
+      lineColor: '#FFFFFF',
+      baseColor: '#4E524A',
+      intensity: 1,
+      idleIntensity: 0.42,
+      shineSize: 20,
+      shineFade: 55,
+      thickness: 1.5,
+      glow: 1,
+      speed: 0.35,
+      proximity: 260
+    };
+
+    var probe = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+    var colors = {};
+    var view = { w: 1, h: 1, ratio: 1 };
+    var pointer = { x: 0, y: 0, known: false };
+    var st = { spot: 0, level: 0, press: 0, ready: false };
+    var raf = 0, last = 0, visible = true;
+
+    function toRgb(value) {
+      if (colors[value]) return colors[value];
+      var rgb = [1, 1, 1];
+      if (probe) {
+        probe.fillStyle = '#000';
+        probe.fillStyle = value;
+        probe.fillRect(0, 0, 1, 1);
+        var d = probe.getImageData(0, 0, 1, 1).data;
+        rgb = [d[0] / 255, d[1] / 255, d[2] / 255];
+      }
+      colors[value] = rgb;
+      return rgb;
+    }
+
+    function cornerRadius() {
+      return Math.min(S.radius, view.w / 2, view.h / 2);
+    }
+
+    function loopPos(x, y) {
+      var halfX = view.w / 2, halfY = view.h / 2, r = cornerRadius();
+      var innerX = halfX - r, innerY = halfY - r;
+      var arc = (Math.PI / 2) * r;
+      var quarter = innerX + innerY + arc;
+      var ax = Math.abs(x), ay = Math.abs(y);
+      var qx = ax - innerX, qy = ay - innerY;
+      var s;
+      if (qx > 0 && qy > 0) s = innerY + Math.atan2(qy, qx) * r;
+      else if (qx > qy) s = Math.min(ay, innerY);
+      else s = innerY + arc + innerX - Math.min(ax, innerX);
+      if (x < 0) s = y >= 0 ? 2 * quarter - s : 2 * quarter + s;
+      else if (y < 0) s = 4 * quarter - s;
+      var out = s / Math.max(4 * quarter, 0.0001);
+      return out - Math.floor(out);
+    }
+
+    function rimPoint(position) {
+      var halfX = view.w / 2, halfY = view.h / 2, r = cornerRadius();
+      var innerX = halfX - r, innerY = halfY - r;
+      var arc = (Math.PI / 2) * r;
+      var quarter = innerX + innerY + arc;
+      var s = (position - Math.floor(position)) * 4 * quarter;
+      var sx = 1, sy = 1;
+      if (s > 3 * quarter) { s = 4 * quarter - s; sy = -1; }
+      else if (s > 2 * quarter) { s -= 2 * quarter; sx = -1; sy = -1; }
+      else if (s > quarter) { s = 2 * quarter - s; sx = -1; }
+      var px = innerX - (s - innerY - arc), py = halfY;
+      if (s <= innerY) { px = halfX; py = s; }
+      else if (s <= innerY + arc) {
+        var a = (s - innerY) / Math.max(r, 0.0001);
+        px = innerX + Math.cos(a) * r;
+        py = innerY + Math.sin(a) * r;
+      }
+      return [px * sx, py * sy];
+    }
+
+    function restSpot() {
+      var r = cornerRadius();
+      var inset = r * (1 - Math.SQRT1_2);
+      return loopPos(inset - view.w / 2, view.h / 2 - inset);
+    }
+
+    function aim() {
+      if (!pointer.known) return null;
+      var rect = btn.getBoundingClientRect();
+      var scale = rect.width / view.w || 1;
+      var halfX = view.w / 2, halfY = view.h / 2;
+      var x = (pointer.x - rect.left - rect.width / 2) / scale;
+      var y = (rect.top + rect.height / 2 - pointer.y) / scale;
+      var dist = Math.hypot(Math.max(Math.abs(x) - halfX, 0), Math.max(Math.abs(y) - halfY, 0));
+      var t = Math.min(1, Math.max(0, 1 - dist / S.proximity));
+      var near = t * t * (3 - 2 * t);
+      var nearest = loopPos(x, y);
+      if (dist > 0) return { spot: nearest, near: near };
+      var depth = Math.min(1, Math.max(0, Math.min(halfX - Math.abs(x), halfY - Math.abs(y)) / (halfY * 0.8)));
+      var sway = restSpot() - (x / halfX) * 0.06 - (y / halfY) * 0.02;
+      var offset = sway - nearest - Math.round(sway - nearest);
+      var d2 = depth * depth * (3 - 2 * depth);
+      return { spot: (nearest + offset * d2) % 1, near: near };
+    }
+
+    function draw() {
+      var w = view.w, h = view.h;
+      var scaleX = canvas.width / (w + PAD * 2);
+      var scaleY = canvas.height / (h + PAD * 2);
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.useProgram(program);
+      gl.uniform2f(u.uCenter, (PAD + w / 2) * scaleX, (PAD + h / 2) * scaleY);
+      gl.uniform2f(u.uHalf, (w / 2) * scaleX, (h / 2) * scaleY);
+      gl.uniform1f(u.uRadius, Math.min(S.radius, w / 2, h / 2) * scaleX);
+      gl.uniform1f(u.uPx, view.ratio);
+      var rim = rimPoint(st.spot);
+      var len = Math.max(Math.hypot(rim[0], rim[1]), 0.0001);
+      var pull = 1 - Math.min(0.35 * (h / 2), len) / len;
+      gl.uniform1f(u.uSpot, st.spot);
+      gl.uniform2f(u.uEntry, rim[0] * pull * scaleX, rim[1] * pull * scaleY);
+      gl.uniform3fv(u.uLineColor, toRgb(S.lineColor));
+      gl.uniform3fv(u.uBaseColor, toRgb(S.baseColor));
+      gl.uniform1f(u.uIntensity, S.intensity * (st.level + st.press * 0.8));
+      gl.uniform2f(u.uWindow, S.shineSize / 360 + st.press * 0.06, S.shineFade / 360 + 0.0001);
+      gl.uniform1f(u.uThickness, S.thickness);
+      gl.uniform1f(u.uGlow, S.glow);
+      gl.bindVertexArray(vao);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      gl.bindVertexArray(null);
+    }
+
+    function frame(now) {
+      raf = 0;
+      if (!visible) return;
+      var dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60;
+      last = now;
+      if (!st.ready) {
+        st.spot = restSpot();
+        st.level = S.idleIntensity;
+        st.ready = true;
+      }
+      var target = aim();
+      var steering = !!target && target.near > 0;
+      var diff = 0;
+      diff = (steering ? target.spot : restSpot()) - st.spot;
+      diff -= Math.round(diff);
+      st.spot = st.spot + diff * (1 - Math.exp(-dt * 8));
+      st.spot -= Math.floor(st.spot);
+      var level = S.idleIntensity + (1 - S.idleIntensity) * (target ? target.near : 0);
+      st.level += (level - st.level) * (1 - Math.exp(-dt * 7));
+      st.press *= Math.exp(-dt * 5);
+      draw();
+      var settling = Math.abs(diff) > 0.0002 || Math.abs(level - st.level) > 0.001 || st.press > 0.002;
+      if (settling) raf = requestAnimationFrame(frame);
+      else last = 0;
+    }
+
+    function wake() {
+      if (!raf && visible && !reduce) raf = requestAnimationFrame(frame);
+    }
+
+    function measure() {
+      view.w = Math.max(1, btn.offsetWidth);
+      view.h = Math.max(1, btn.offsetHeight);
+      view.ratio = Math.min(window.devicePixelRatio || 1, 3);
+      canvas.width = Math.max(1, Math.round((view.w + PAD * 2) * view.ratio));
+      canvas.height = Math.max(1, Math.round((view.h + PAD * 2) * view.ratio));
+      if (st.ready) draw();
+      else { st.spot = restSpot(); st.level = S.idleIntensity; st.ready = true; draw(); }
+      wake();
+    }
+
+    window.addEventListener('pointermove', function (e) {
+      pointer.x = e.clientX; pointer.y = e.clientY; pointer.known = true; wake();
+    }, { passive: true });
+    btn.addEventListener('pointerdown', function (e) {
+      pointer.x = e.clientX; pointer.y = e.clientY; pointer.known = true;
+      st.press = 1; wake();
+    });
+    window.addEventListener('pointerup', function (e) {
+      if (e.pointerType === 'mouse') return;
+      pointer.known = false; wake();
+    }, { passive: true });
+    document.documentElement.addEventListener('pointerleave', function () {
+      pointer.known = false; wake();
+    });
+
+    if (window.ResizeObserver) new ResizeObserver(measure).observe(btn);
+    if (window.IntersectionObserver) {
+      new IntersectionObserver(function (entries) {
+        visible = entries.some(function (en) { return en.isIntersecting; });
+        if (visible) { last = 0; wake(); }
+      }).observe(btn);
+    }
+    measure();
+    if (reduce) { st.level = S.idleIntensity; draw(); }
+  })();
+
+  /* ---------------------------------------------------------------------
+     13. EVENTS — the wheel turns pages, the pages are dragged by hand
+     --------------------------------------------------------------------- */
+  window.addEventListener('wheel', function (e) {
+    if (state.modalOpen) return;              // let the dialog keep its own wheel
+    e.preventDefault();
+    var now = performance.now();
+    if (now - pageLockAt < 640) { wheelAcc = 0; return; }
+    // a trackpad sends dozens of tiny deltas per flick: accumulate, then fire
+    // once past a threshold so one gesture can never skip two pages
+    wheelAcc += e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+    if (Math.abs(wheelAcc) < 26) return;
+    var dir = wheelAcc > 0 ? 1 : -1;
+    wheelAcc = 0;
+    stepPage(dir);
+  }, { passive: false });
+
+  var touchY = 0, touchX = 0, touchT = 0;
+  window.addEventListener('touchstart', function (e) {
+    if (state.modalOpen || !e.touches.length) return;
+    touchY = e.touches[0].clientY;
+    touchX = e.touches[0].clientX;
+    touchT = performance.now();
+  }, { passive: true });
+  window.addEventListener('touchend', function (e) {
+    if (state.modalOpen || !e.changedTouches.length) return;
+    var dy = e.changedTouches[0].clientY - touchY;
+    var dx = e.changedTouches[0].clientX - touchX;
+    if (performance.now() - touchT > 900) return;
+    // vertical swipe = page, horizontal swipe is left to the slider / carousel
+    if (Math.abs(dy) > 46 && Math.abs(dy) > Math.abs(dx) * 1.4) stepPage(dy < 0 ? 1 : -1);
+  }, { passive: true });
+
+  var rzTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(rzTimer);
+    rzTimer = setTimeout(function () {
+      sizePage();
+      heroTitleFit();
+      layoutSlider();
+      layoutCarousel();
+    }, 140);
+  });
+
+  window.addEventListener('orientationchange', function () {
+    setTimeout(function () { sizePage(); heroTitleFit(); layoutSlider(); layoutCarousel(); }, 320);
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && state.modalOpen) {
+      if (sheet && sheet.classList.contains('is-open')) closeSheet();
+      else closeDetail();
+      return;
+    }
+    if (state.modalOpen) {
+      if (sheet && sheet.classList.contains('is-open')) return;
+      if (e.key === 'ArrowRight') stepDetail(1);
+      if (e.key === 'ArrowLeft') stepDetail(-1);
+      return;
+    }
+
+    var onResume = chapterOpacity('resume', state.layout) > 0.6;
+    var onWork   = chapterOpacity('work', state.layout) > 0.6;
+
+    // ↑/↓, PageUp/PageDown and space turn pages
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ' ||
+        e.key === 'ArrowUp'   || e.key === 'PageUp') {
+      e.preventDefault();
+      stepPage((e.key === 'ArrowUp' || e.key === 'PageUp') ? -1 : 1);
+      return;
+    }
+    // ←/→ slide the page you are on
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      var d = e.key === 'ArrowRight' ? 1 : -1;
+      if (onResume && SLIDES > 1) { goSlide(state.resumeIndex + d); return; }
+      if (onWork) {
+        state.workIndex = clamp(state.workIndex + d, 0, cards.length - 1);
+        state.workLock = performance.now();
+        setCarouselTo(state.workIndex);
+      }
+    }
+  });
+
+  /* ---------------------------------------------------------------------
+     14. BOOT
+     --------------------------------------------------------------------- */
+  function measureAll() {
+    layoutSlider();
+    layoutCarousel();
+    fitPanels();
+  }
+
+  /* panels are typographic columns: if the viewport is short, scale the whole
+     column down a little instead of letting it slide under the nav */
+  var panelEls = null;
+  function fitPanels() {
+    if (!panelEls) panelEls = [].slice.call(document.querySelectorAll('.panel'));
+    for (var i = 0; i < panelEls.length; i++) {
+      var p = panelEls[i], inner = p.parentNode;
+      p.style.transform = '';
+      if (isSmall() || !inner) continue;
+      var cs = getComputedStyle(inner);
+      var avail = inner.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      var h = p.offsetHeight;
+      if (avail > 120 && h > avail) {
+        p.style.transformOrigin = 'left center';
+        p.style.transform = 'scale(' + Math.max(0.78, avail / h).toFixed(3) + ')';
+      }
+    }
+  }
+
+  /* ---------------------------------------------------------------------
+     9.6 FLIP CARD — the resume card: 概要 on the front, 履历 on the back
+     Port of React Bits <FlipCard />. No motion library here, so the turn
+     spring (k=170 c=20), the tilt sweep (k=240 c=24 m=.6), the drag with
+     velocity projection and the narrowing shadow are all hand-rolled.
+     --------------------------------------------------------------------- */
+  (function () {
+    var root = $('#resumeFlip');
+    if (!root) return;
+    var stage = $('#resumeStage');
+    var shadowEl = root.querySelector('.flip__shadow');
+    var glares = [].slice.call(root.querySelectorAll('.flip__glare'));
+    var faces = [].slice.call(root.querySelectorAll('.flip__face'));
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+    var K = { stiff: 170, damp: 20, tiltStiff: 400, tiltDamp: 40, liftStiff: 320, liftDamp: 26,
+              tiltMax: 10, hover: 1.03, persp: 1100, fling: 0.16 };
+
+    var S = {
+      turn: 0, vel: 0, target: 0,
+      tx: 0, txv: 0, txT: 0,
+      ty: 0, tyv: 0, tyT: 0,
+      lift: 1, liftv: 0, liftT: 1,
+      sheen: 0, sheenv: 0, sheenT: 0,
+      gx: 50, gy: 50,
+      back: false, raf: 0, last: 0
+    };
+    var drag = null;
+
+    function snap(d) { return Math.round(d / 180) * 180; }
+    function isBack(d) { return Math.abs(Math.round(d / 180)) % 2 === 1; }
+    /* semi-implicit spring, sub-stepped for stability. Returns BOTH cur and vel:
+       the velocity has to feed back into the next frame or a flicked card never
+       decelerates and sails straight past the face it should land on. */
+    function step(cur, vel, target, k, c, dt) {
+      var n = Math.max(1, Math.ceil(dt / 0.004)), h = dt / n;
+      for (var i = 0; i < n; i++) {
+        vel += (k * (target - cur) - c * vel) * h;
+        cur += vel * h;
+      }
+      return { cur: cur, vel: vel };
+    }
+
+    function paint() {
+      var facing = Math.abs(Math.cos(S.turn * Math.PI / 180));
+      stage.style.transform =
+        'perspective(' + K.persp + 'px) scale(' + S.lift.toFixed(4) + ') ' +
+        'rotateX(' + S.tx.toFixed(2) + 'deg) rotateY(' + (S.turn + S.ty).toFixed(2) + 'deg)';
+      if (shadowEl) {
+        shadowEl.style.transform = 'scaleX(' + (0.08 + 0.92 * facing).toFixed(3) + ')';
+        shadowEl.style.opacity = (0.1 + 0.9 * facing * facing).toFixed(3);
+      }
+      for (var i = 0; i < glares.length; i++) {
+        glares[i].style.setProperty('--gx', S.gx.toFixed(1) + '%');
+        glares[i].style.setProperty('--gy', S.gy.toFixed(1) + '%');
+        glares[i].style.opacity = S.sheen.toFixed(3);
+      }
+    }
+
+    function commit() {
+      var b = isBack(S.target);
+      if (b === S.back) return;
+      S.back = b;
+      root.setAttribute('aria-pressed', b ? 'true' : 'false');
+      root.setAttribute('aria-label', b ? '返回简短概要' : '翻开查看完整履历');
+      if (faces[0]) faces[0].setAttribute('aria-hidden', b ? 'true' : 'false');
+      if (faces[1]) faces[1].setAttribute('aria-hidden', b ? 'false' : 'true');
+    }
+
+    function settled() {
+      return !drag &&
+        Math.abs(S.target - S.turn) < 0.06 && Math.abs(S.vel) < 0.06 &&
+        Math.abs(S.txT - S.tx) < 0.03 && Math.abs(S.tyT - S.ty) < 0.03 &&
+        Math.abs(S.liftT - S.lift) < 0.0004 && Math.abs(S.sheenT - S.sheen) < 0.004;
+    }
+
+    function frame(now) {
+      var dt = (now - S.last) / 1000;
+      if (!(dt > 0)) dt = 0.016;
+      if (dt > 0.05) dt = 0.05;
+      S.last = now;
+      var r = step(S.turn, S.vel, S.target, K.stiff, K.damp, dt);
+      S.turn = r.cur; S.vel = r.vel;
+      if (Math.abs(S.target - S.turn) < 0.02 && Math.abs(S.vel) < 0.4) { S.turn = S.target; S.vel = 0; }
+      r = step(S.tx, S.txv, S.txT, K.tiltStiff, K.tiltDamp, dt); S.tx = r.cur; S.txv = r.vel;
+      r = step(S.ty, S.tyv, S.tyT, K.tiltStiff, K.tiltDamp, dt); S.ty = r.cur; S.tyv = r.vel;
+      r = step(S.lift, S.liftv, S.liftT, K.liftStiff, K.liftDamp, dt); S.lift = r.cur; S.liftv = r.vel;
+      r = step(S.sheen, S.sheenv, S.sheenT, K.liftStiff, K.liftDamp, dt); S.sheen = r.cur; S.sheenv = r.vel;
+      paint();
+      if (settled()) { commit(); S.raf = 0; return; }
+      S.raf = requestAnimationFrame(frame);
+    }
+
+    function wake() {
+      if (reduce.matches) {
+        S.turn = S.target; S.vel = 0;
+        S.tx = S.txT; S.ty = S.tyT; S.lift = S.liftT; S.sheen = S.sheenT;
+        paint(); commit(); return;
+      }
+      S.last = performance.now();
+      if (!S.raf) S.raf = requestAnimationFrame(frame);
+    }
+
+    function rest() {
+      S.txT = 0; S.tyT = 0; S.sheenT = 0; S.liftT = 1;
+      wake();
+    }
+
+    function flip() {
+      var base = snap(S.turn);
+      S.target = isBack(base) ? base - 180 : base + 180;
+      if (reduce.matches) { S.turn = S.target; S.vel = 0; paint(); commit(); return; }
+      wake();
+    }
+
+    root.addEventListener('pointerdown', function (e) {
+      if (e.button !== 0 || !e.isPrimary) return;
+      try { root.setPointerCapture(e.pointerId); } catch (err) {}
+      drag = { id: e.pointerId, x: e.clientX, base: S.turn, moved: false,
+               slop: e.pointerType === 'touch' ? 8 : 4,
+               span: root.clientWidth || 420, hist: [] };
+      S.vel = 0;
+      S.sheenT = 0;
+      S.liftT = K.hover;
+      root.classList.add('is-held');
+      wake();
+    });
+
+    root.addEventListener('pointermove', function (e) {
+      if (drag && drag.id === e.pointerId) {
+        var dx = e.clientX - drag.x;
+        if (!drag.moved) {
+          if (Math.abs(dx) < drag.slop) return;
+          drag.moved = true;
+          root.classList.add('is-dragging');
+          S.txT = 0; S.tyT = 0; S.sheenT = 0;
+        }
+        S.turn = drag.base + (dx / drag.span) * 180;
+        var now = performance.now();
+        drag.hist.push({ t: now, v: S.turn });
+        while (drag.hist.length > 2 && now - drag.hist[0].t > 90) drag.hist.shift();
+        paint();
+        return;
+      }
+      if (e.pointerType === 'touch' || reduce.matches) return;
+      var r = root.getBoundingClientRect();
+      var px = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+      var py = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
+      S.txT = (0.5 - py) * 2 * K.tiltMax;
+      S.tyT = (px - 0.5) * 2 * K.tiltMax;
+      S.gx = px * 100;
+      S.gy = py * 100;
+      S.sheenT = 1;
+      S.liftT = K.hover;
+      wake();
+    });
+
+    function endDrag(e, cancelled) {
+      if (!drag || drag.id !== e.pointerId) return;
+      var d = drag;
+      drag = null;
+      try { if (root.hasPointerCapture(e.pointerId)) root.releasePointerCapture(e.pointerId); } catch (err) {}
+      root.classList.remove('is-dragging', 'is-held');
+      if (!d.moved) {
+        if (!cancelled) flip(); else wake();
+        return;
+      }
+      var here = S.turn;
+      var v = 0, a = d.hist[0], b = d.hist[d.hist.length - 1];
+      if (!cancelled && a && b && b.t > a.t && performance.now() - b.t < 60) {
+        v = ((b.v - a.v) / (b.t - a.t)) * 1000;
+      }
+      /* a hard flick can hand the spring hundreds of deg/s, which overshoots the
+         face by ~v/?; cap it so the settle bounce stays a nudge, not a spin */
+      if (!isFinite(v)) v = 0;
+      var vMax = 26 * Math.sqrt(K.stiff);
+      if (v > vMax) v = vMax; else if (v < -vMax) v = -vMax;
+      var near = snap(here);
+      var to = cancelled
+        ? snap(d.base)
+        : Math.min(near + 180, Math.max(near - 180, snap(here + v * K.fling)));
+      S.target = to;
+      S.vel = cancelled ? 0 : v;
+      window.__flipLast = { v: Math.round(v), here: Math.round(here), to: to, cancelled: !!cancelled, n: d.hist.length };
+      S.liftT = root.matches(':hover') ? K.hover : 1;
+      wake();
+    }
+
+    root.addEventListener('pointerup', function (e) { endDrag(e, false); });
+    root.addEventListener('pointercancel', function (e) { endDrag(e, true); });
+    root.addEventListener('lostpointercapture', function (e) { endDrag(e, true); });
+    root.addEventListener('pointerleave', function () { if (!drag) rest(); });
+    root.addEventListener('blur', function () { if (!drag) rest(); });
+    root.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      if (!e.repeat) flip();
+    });
+
+    commit();
+    paint();
+    window.__flip = { S: S, flip: flip, state: function () { return { turn: S.turn, target: S.target, back: S.back }; } };
+  })();
+
+  dcBuild();
+  layoutCarousel();
+  history.scrollRestoration = 'manual';
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+
+  function fitAll() { heroTitleFit(); layoutSlider(); layoutCarousel(); }
+
+  sizePage();
+  if (document.fonts && document.fonts.load) {
+    // measure only once the display face really is available, otherwise the
+    // fitted size is computed from fallback metrics and overflows
+    document.fonts.load('400 100px Anton').then(fitAll, fitAll);
+    document.fonts.load('300 16px Inter').then(fitAll, fitAll);
+  }
+  document.fonts.ready.then(fitAll);
+  window.addEventListener('load', fitAll);
+  setTimeout(fitAll, 900);
+
+  // initial state: first frame of the film, first page
+  state.layout = state.film = state.target = 0;
+
+  // small hook so the deck can be driven/inspected from the console
+  window.__deck = {
+    state: state, pages: PAGES,
+    go: goPage, step: stepPage,
+    slide: goSlide, card: function (i) { state.workIndex = clamp(i, 0, cards.length - 1); state.workLock = performance.now(); setCarouselTo(state.workIndex); }
+  };
+
+  requestAnimationFrame(function (t) { last = t; frame(t); });
+
+})();
+</script>
+</body>
+</html>
